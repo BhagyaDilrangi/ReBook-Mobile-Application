@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Main Theme Colors -->
+    <color name="primary">#1E88E5</color>
+    <color name="darkBlue">#0D47A1</color>
+
+    <!-- UI Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="lightGray">#F5F5F5</color>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_700">#3700B3</color>
+
+    <color name="teal_200">#03DAC5</color>
+
+    <!-- Optional Accent (for cards / highlights) -->
+    <color name="accentBlue">#2196F3</color>
+    <color name="successGreen">#4CAF50</color>
+    <color name="warningOrange">#FF9800</color>
+
+</resources>

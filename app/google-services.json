@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "655329907384",
+    "project_id": "rebook-86489",
+    "storage_bucket": "rebook-86489.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655329907384:android:eac4255c2f20c6b1cb9a4d",
+        "android_client_info": {
+          "package_name": "com.nibm.rebook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuzyhHliGO5Q-mtApffA80GGJF3g5YxQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
