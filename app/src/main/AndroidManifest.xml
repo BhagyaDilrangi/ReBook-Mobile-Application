@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ReBook">
+        <activity
+            android:name=".User_Buyer_Chat_with_saller"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_RequestItems"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Profile"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Selling"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Donating"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_NotesDonate"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_NotesSales"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_PastPaperDonate"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_PastpaperSales"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_BooksSales"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_BooksDonate"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_CalculculatorDonate"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_CalculatarSales"
+            android:exported="false" />
+        <activity
+            android:name=".User_Biyer_BooksFilter"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_PastPapersFilter"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_NotesFilter"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_CalculaterFilter"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Books"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_LectureNotes"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_PastPapers"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_PaymentHistory"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_SavedItems"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_ReviewPage"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Card_payment"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_borowing"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Calcuator"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Home"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Register"
+            android:exported="false" />
+        <activity
+            android:name=".User_Buyer_Login"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
