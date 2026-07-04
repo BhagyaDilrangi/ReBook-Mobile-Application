@@ -7,21 +7,21 @@
 
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btndonationsfilter"
+        android:id="@+id/btn_pastpaper_donationsfilter"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:text="Donesions"
         android:layout_marginBottom="16dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnsalesfilter"
+        android:id="@+id/btn_pastpaper_sellfilter"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:text="Sales"
         android:layout_marginBottom="16dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnborowfilter"
+        android:id="@+id/btn_pastpaper_borowfilter"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:text="Borrow" />

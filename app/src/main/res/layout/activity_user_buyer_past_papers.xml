@@ -113,7 +113,7 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/btnBorrow1"
+                        android:id="@+id/btn_pastpapers_Borrow"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="4dp"

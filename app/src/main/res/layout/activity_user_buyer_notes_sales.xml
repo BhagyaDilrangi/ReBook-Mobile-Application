@@ -102,7 +102,7 @@
                     android:weightSum="2">
 
                     <Button
-                        android:id="@+id/btnDetails1"
+                        android:id="@+id/btn_notes_sales_viewDetails"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="4dp"
@@ -113,7 +113,7 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/btnBorrow1"
+                        android:id="@+id/btn_notes_sell_get"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="4dp"
@@ -133,7 +133,7 @@
                     android:weightSum="2">
 
                     <Button
-                        android:id="@+id/btnSave1"
+                        android:id="@+id/btn_notes_sell_Save"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginEnd="4dp"
