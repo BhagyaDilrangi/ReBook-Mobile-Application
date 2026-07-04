@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -17,7 +18,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_seller_dashboard);
 
         if (getSupportActionBar() != null) {
@@ -27,11 +27,11 @@ public class SellerDashboardActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
 
-        findViewById(R.id.imgProfile).setOnClickListener(v -> {
-            drawerLayout.openDrawer(androidx.core.view.GravityCompat.START);
-        });
+        // Profile Drawer Trigger
+        findViewById(R.id.imgProfile).setOnClickListener(v ->
+                drawerLayout.openDrawer(GravityCompat.START));
 
-        // 1. Existing Quick Action Card Buttons
+        // 1. Dashboard Card Listeners
         findViewById(R.id.cardAddMaterial).setOnClickListener(v -> {
             if (isUserVerified()) {
                 startActivity(new Intent(this, AddMaterialActivity.class));
@@ -49,21 +49,25 @@ public class SellerDashboardActivity extends AppCompatActivity {
         findViewById(R.id.cardRatings).setOnClickListener(v ->
                 startActivity(new Intent(this, SellerFeedbackActivity.class)));
 
-        // 2. Navigation Drawer Logic for all 14 screens
+        // 2. Navigation Drawer Logic
         navView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_add) startActivity(new Intent(this, AddMaterialActivity.class));
-            else if (id == R.id.nav_inventory) startActivity(new Intent(this, MyListingsActivity.class));
-            else if (id == R.id.nav_requests) startActivity(new Intent(this, SalesRequestsActivity.class));
-            else if (id == R.id.nav_history_sales) startActivity(new Intent(this, SalesHistoryActivity.class));
-            else if (id == R.id.nav_history_borrow) startActivity(new Intent(this, BorrowHistoryActivity.class));
-            else if (id == R.id.nav_notifications) startActivity(new Intent(this, NotificationsActivity.class));
-            else if (id == R.id.nav_chat) startActivity(new Intent(this, ChatActivity.class));
-            else if (id == R.id.nav_leaderboard) startActivity(new Intent(this, LeaderboardActivity.class));
-            else if (id == R.id.nav_profile) startActivity(new Intent(this, EditProfileActivity.class));
+            if (id == R.id.nav_add) startActivity(new Intent(SellerDashboardActivity.this, AddMaterialActivity.class));
+            else if (id == R.id.nav_inventory) startActivity(new Intent(SellerDashboardActivity.this, MyListingsActivity.class));
+            else if (id == R.id.nav_requests) startActivity(new Intent(SellerDashboardActivity.this, SalesRequestsActivity.class));
+            else if (id == R.id.nav_history_sales) startActivity(new Intent(SellerDashboardActivity.this, SalesHistoryActivity.class));
+            else if (id == R.id.nav_history_borrow) startActivity(new Intent(SellerDashboardActivity.this, BorrowHistoryActivity.class));
+            else if (id == R.id.nav_notifications) startActivity(new Intent(SellerDashboardActivity.this, NotificationsActivity.class));
+            else if (id == R.id.nav_chat) startActivity(new Intent(SellerDashboardActivity.this, ChatActivity.class));
+            else if (id == R.id.nav_leaderboard) startActivity(new Intent(SellerDashboardActivity.this, LeaderboardActivity.class));
+            else if (id == R.id.nav_profile) startActivity(new Intent(SellerDashboardActivity.this, EditProfileActivity.class));
+            else if (id == R.id.nav_logout) {
+                // Implement Logout Logic Here
+                Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+            }
 
-            drawerLayout.closeDrawers(); // Close the menu after clicking
+            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
     }

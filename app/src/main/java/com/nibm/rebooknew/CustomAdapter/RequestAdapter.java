@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nibm.rebooknew.R;
-import com.nibm.rebooknew.Request;
+import com.nibm.rebooknew.dto.Request;
 
 import java.util.List;
 

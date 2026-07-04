@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nibm.rebooknew.CustomAdapter.ListingAdapter;
+import com.nibm.rebooknew.dto.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,16 @@ public class MyListingsActivity extends AppCompatActivity {
     }
 
     private void loadSampleData() {
-        // Adding dummy data
+        // Adding 10 diverse dummy items
         materialList.add(new Material("Data Structures Notes", "Available"));
         materialList.add(new Material("Financial Accounting Book", "Sold"));
         materialList.add(new Material("Advanced Calculus Guide", "Borrowed"));
+        materialList.add(new Material("Introduction to Psychology", "Available"));
+        materialList.add(new Material("Java Programming Handbook", "Reserved"));
+        materialList.add(new Material("Business Ethics Case Studies", "Available"));
+        materialList.add(new Material("Principles of Marketing", "Sold"));
+        materialList.add(new Material("Engineering Mathematics I", "Borrowed"));
+        materialList.add(new Material("Database Systems Workbook", "Available"));
+        materialList.add(new Material("Research Methodology Manual", "Reserved"));
     }
 }

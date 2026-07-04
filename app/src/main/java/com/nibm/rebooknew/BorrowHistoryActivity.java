@@ -10,6 +10,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nibm.rebooknew.CustomAdapter.BorrowAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class BorrowHistoryActivity extends AppCompatActivity {
 
     RecyclerView rvHistory;
@@ -19,11 +24,24 @@ public class BorrowHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_borrow_history);
 
-        getSupportActionBar().hide();
+        // Hide the Action Bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
-        RecyclerView rv = findViewById(R.id.rvHistory);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        // Use an Adapter to fetch and display completed transactions from your DB
+        // Initialize RecyclerView
+        RecyclerView rvHistory = findViewById(R.id.rvHistory);
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
+
+        // Create Dummy Data
+        List<com.nibm.rebooknew.BorrowItem> borrowList = new ArrayList<>();
+        borrowList.add(new com.nibm.rebooknew.BorrowItem("Operating Systems Book", "2026-08-15", "Returned"));
+        borrowList.add(new com.nibm.rebooknew.BorrowItem("Scientific Calculator", "2026-07-20", "Overdue"));
+        borrowList.add(new com.nibm.rebooknew.BorrowItem("Lab Coat", "2026-07-10", "Returned"));
+
+        // Set Adapter
+        BorrowAdapter adapter = new BorrowAdapter(borrowList);
+        rvHistory.setAdapter(adapter);
     }
 
 }

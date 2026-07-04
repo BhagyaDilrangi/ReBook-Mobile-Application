@@ -10,18 +10,32 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nibm.rebooknew.CustomAdapter.NotificationAdapter;
+import com.nibm.rebooknew.dto.NotificationItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class NotificationsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifications);
+        setContentView(R.layout.activity_notifications); // Ensure this matches your XML filename
 
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        RecyclerView rv = findViewById(R.id.rvNotifications);
+        RecyclerView rv = findViewById(R.id.rvNotifications); // Matches your XML ID
         rv.setLayoutManager(new LinearLayoutManager(this));
 
-        // Logic: Fetch notification data (e.g., 'New Purchase Request') from Firebase
+        // Create Dummy Data
+        List<NotificationItem> notifyList = new ArrayList<>();
+        notifyList.add(new NotificationItem("Request Accepted", "Your request for 'Calculus Book' was accepted."));
+        notifyList.add(new NotificationItem("New Message", "User 'Student B' sent you a message regarding a listing."));
+        notifyList.add(new NotificationItem("Return Reminder", "Your book 'OS Essentials' is due tomorrow!"));
+
+        // Set Adapter
+        NotificationAdapter adapter = new NotificationAdapter(notifyList);
+        rv.setAdapter(adapter);
     }
 }

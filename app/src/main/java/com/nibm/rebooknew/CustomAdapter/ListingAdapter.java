@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nibm.rebooknew.Material;
+import com.nibm.rebooknew.dto.Material;
 import com.nibm.rebooknew.R;
 
 import java.util.List;

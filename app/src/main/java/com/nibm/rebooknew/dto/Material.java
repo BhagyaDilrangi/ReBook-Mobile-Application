@@ -1,4 +1,4 @@
-package com.nibm.rebooknew;
+package com.nibm.rebooknew.dto;
 
 public class Material {
     private String title;
