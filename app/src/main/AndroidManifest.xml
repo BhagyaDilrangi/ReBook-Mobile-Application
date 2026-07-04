@@ -12,6 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReBookNew">
         <activity
+            android:name=".NotificationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LeaderboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BorrowHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SalesHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".SellerFeedbackActivity"
             android:exported="false" />
         <activity

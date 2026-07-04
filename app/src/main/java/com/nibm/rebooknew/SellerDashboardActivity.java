@@ -6,9 +6,13 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 public class SellerDashboardActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,50 +20,55 @@ public class SellerDashboardActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_seller_dashboard);
 
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navView = findViewById(R.id.nav_view);
 
-        CardView cardAddMaterial = findViewById(R.id.cardAddMaterial);
-        CardView cardMyListings = findViewById(R.id.cardMyListings);
-        CardView cardRequests = findViewById(R.id.cardRequests);
-        CardView cardRatings = findViewById(R.id.cardRatings);
+        findViewById(R.id.imgProfile).setOnClickListener(v -> {
+            drawerLayout.openDrawer(androidx.core.view.GravityCompat.START);
+        });
 
-
-        cardAddMaterial.setOnClickListener(v -> {
-
+        // 1. Existing Quick Action Card Buttons
+        findViewById(R.id.cardAddMaterial).setOnClickListener(v -> {
             if (isUserVerified()) {
-
-                Intent intent = new Intent(SellerDashboardActivity.this, AddMaterialActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, AddMaterialActivity.class));
             } else {
-
-                Toast.makeText(this,
-                        "Your account must be verified before publishing materials.",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Account must be verified!", Toast.LENGTH_LONG).show();
             }
         });
 
-        cardMyListings.setOnClickListener(v -> {
-            startActivity(new Intent(this, MyListingsActivity.class));
-        });
+        findViewById(R.id.cardMyListings).setOnClickListener(v ->
+                startActivity(new Intent(this, MyListingsActivity.class)));
 
+        findViewById(R.id.cardRequests).setOnClickListener(v ->
+                startActivity(new Intent(this, SalesRequestsActivity.class)));
 
-        cardRequests.setOnClickListener(v -> {
-            startActivity(new Intent(this, SalesRequestsActivity.class));
-        });
+        findViewById(R.id.cardRatings).setOnClickListener(v ->
+                startActivity(new Intent(this, SellerFeedbackActivity.class)));
 
+        // 2. Navigation Drawer Logic for all 14 screens
+        navView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-        cardRatings.setOnClickListener(v -> {
-            startActivity(new Intent(this, SellerFeedbackActivity.class));
+            if (id == R.id.nav_add) startActivity(new Intent(this, AddMaterialActivity.class));
+            else if (id == R.id.nav_inventory) startActivity(new Intent(this, MyListingsActivity.class));
+            else if (id == R.id.nav_requests) startActivity(new Intent(this, SalesRequestsActivity.class));
+            else if (id == R.id.nav_history_sales) startActivity(new Intent(this, SalesHistoryActivity.class));
+            else if (id == R.id.nav_history_borrow) startActivity(new Intent(this, BorrowHistoryActivity.class));
+            else if (id == R.id.nav_notifications) startActivity(new Intent(this, NotificationsActivity.class));
+            else if (id == R.id.nav_chat) startActivity(new Intent(this, ChatActivity.class));
+            else if (id == R.id.nav_leaderboard) startActivity(new Intent(this, LeaderboardActivity.class));
+            else if (id == R.id.nav_profile) startActivity(new Intent(this, EditProfileActivity.class));
+
+            drawerLayout.closeDrawers(); // Close the menu after clicking
+            return true;
         });
     }
 
-
     private boolean isUserVerified() {
-
         return true;
     }
 }

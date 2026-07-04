@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_add" android:title="Add Material" />
+        <item android:id="@+id/nav_inventory" android:title="My Inventory" />
+        <item android:id="@+id/nav_requests" android:title="Requests" />
+        <item android:id="@+id/nav_history_sales" android:title="Sales History" />
+        <item android:id="@+id/nav_history_borrow" android:title="Borrow History" />
+        <item android:id="@+id/nav_notifications" android:title="Notifications" />
+        <item android:id="@+id/nav_chat" android:title="Messages" />
+        <item android:id="@+id/nav_leaderboard" android:title="Top Contributors" />
+        <item android:id="@+id/nav_profile" android:title="Edit Profile" />
+        <item android:id="@+id/nav_logout" android:title="Logout" />
+    </group>
+
+</menu>
