@@ -1,23 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ReBook">
+
         <activity
-            android:name=".LeaderboardActivity"
+            android:name=".BuyerChat"
             android:exported="false" />
         <activity
+            android:name=".BuyerRequestItems"
             android:exported="false" />
         <activity
+            android:name=".BuyerProfile"
             android:exported="false" />
         <activity
+            android:name=".BuyerSelling"
             android:exported="false" />
         <activity
+            android:name=".BuyerDonating"
             android:exported="false" />
         <activity
+            android:name=".BuyerNotesDonate"
             android:exported="false" />
         <activity
+            android:name=".BuyerNotesSales"
             android:exported="false" />
         <activity
+            android:name=".BuyerPastPaperDonate"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerPastpaperSales"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBooksSales"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBooksDonate"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerCalculculatorDonate"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerCalculatarSales"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBooksFilter"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerPastPapersFilter"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerNotesFilter"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerCalculaterFilter"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBooks"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerLectureNotes"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerPastPapers"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerPaymentHistory"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerSavedItems"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerReviewPage"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerCardPayment"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBorowing"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerCalcuator"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerHome"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerRegister"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerLogin"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

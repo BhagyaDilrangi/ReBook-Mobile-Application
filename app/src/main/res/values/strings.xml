@@ -1,2 +1,4 @@
 <resources>
+    <string name="app_name">ReBook</string>
+    <string name="available_calculators">Available Calculators</string>
 </resources>

@@ -1,0 +1,29 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_pastpaper_donationsfilter"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="Donesions"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_pastpaper_sellfilter"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="Sales"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_pastpaper_borowfilter"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="Borrow" />
+
+</LinearLayout>
