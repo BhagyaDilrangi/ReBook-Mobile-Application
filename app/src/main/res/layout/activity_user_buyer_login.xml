@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,7 +29,6 @@
                 android:textColor="#212529"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                android:layout_marginTop="4dp"
                 android:layout_marginBottom="24dp" />
 
             <TextView
@@ -42,7 +41,7 @@
                 android:layout_marginBottom="6dp"/>
 
             <EditText
-                android:id="@+id/et_username"
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:hint="Email address"
@@ -69,9 +68,10 @@
                 android:inputType="textPassword"
                 android:textSize="15sp"
                 android:paddingHorizontal="12dp"
+                android:paddingEnd="40dp"
                 android:background="@android:drawable/editbox_background_normal"
-                android:layout_marginBottom="16dp" />
-
+                android:layout_marginBottom="16dp"
+                 />
 
             <Button
                 android:id="@+id/btnlogin"
@@ -110,7 +110,6 @@
                     android:clickable="true"
                     android:focusable="true"/>
             </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

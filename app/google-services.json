@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "806698862564-dvom0qtr7877urvcp76cett4sn35rpjd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nibm.rebook",
+            "certificate_hash": "76caf22755e3ff12d5c302dc4a5b2cf016c6606c"
+          }
+        },
+        {
           "client_id": "806698862564-aq8hvuoofocoqlgu9fgl0edlglu74uis.apps.googleusercontent.com",
           "client_type": 3
         }
