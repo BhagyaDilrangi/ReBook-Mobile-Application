@@ -1,40 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/nav_students"
-        android:icon="@drawable/ic_students"
-        android:title="Students" />
-
-    <item
-        android:id="@+id/nav_materials"
-        android:icon="@drawable/ic_books"
-        android:title="Materials" />
-
-    <item
-        android:id="@+id/nav_reports"
-        android:icon="@drawable/ic_reports"
-        android:title="Reports" />
-
-    <item
-        android:id="@+id/nav_transactions"
-        android:icon="@drawable/ic_transaction"
-        android:title="Transactions" />
-
-    <item
-        android:id="@+id/nav_feedback"
-        android:icon="@drawable/ic_feedback"
-        android:title="Feedback" />
-
-    <item
-        android:id="@+id/nav_leaderboard"
-        android:icon="@drawable/ic_leaderboard"
-        android:title="Leaderboard" />
-
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_logout"
-        android:title="Logout" />
 
 </menu>
