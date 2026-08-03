@@ -7,24 +7,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nibm.rebooknew.dto.HistoryItem;
 import com.nibm.rebooknew.R;
+import com.nibm.rebooknew.dto.HistoryItem;
 
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
-    private List<HistoryItem> list;
+    private final List<HistoryItem> historyList;
 
-    // Constructor
-    public HistoryAdapter(List<HistoryItem> list) {
-        this.list = list;
+    public HistoryAdapter(List<HistoryItem> historyList) {
+        this.historyList = historyList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // CORRECTED: Inflate your custom XML instead of the system layout
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_history, parent, false);
         return new ViewHolder(view);
@@ -32,27 +30,34 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        HistoryItem item = list.get(position);
+        HistoryItem item = historyList.get(position);
 
-        // CORRECTED: Use the IDs from item_history.xml
-        holder.txtTitle.setText(item.getTitle());
-        holder.txtDate.setText("Sold on: " + item.getDate());
+        if (holder.txtMaterialName != null) {
+            holder.txtMaterialName.setText(item.getTitle());
+        }
+        if (holder.txtMaterialStatus != null) {
+            holder.txtMaterialStatus.setText("Status: Completed");
+        }
+        if (holder.txtSoldCount != null) {
+            holder.txtSoldCount.setText("Sold Count: " + item.getDate());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return historyList.size();
     }
 
-    // ViewHolder class matches the IDs in item_history.xml
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtDate;
+        final TextView txtMaterialName;
+        final TextView txtMaterialStatus;
+        final TextView txtSoldCount;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // CORRECTED: Finding IDs from your custom layout file
-            txtTitle = itemView.findViewById(R.id.txtHistoryTitle);
-            txtDate = itemView.findViewById(R.id.txtHistoryDate);
+            txtMaterialName = itemView.findViewById(R.id.txtMaterialName);
+            txtMaterialStatus = itemView.findViewById(R.id.txtMaterialStatus);
+            txtSoldCount = itemView.findViewById(R.id.txtSoldCount);
         }
     }
 }
