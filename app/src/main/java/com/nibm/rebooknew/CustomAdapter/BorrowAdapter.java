@@ -9,14 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nibm.rebooknew.BorrowItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowAdapter extends RecyclerView.Adapter<BorrowAdapter.ViewHolder> {
     private List<BorrowItem> list;
 
-
-
-    public BorrowAdapter(List<com.nibm.rebooknew.BorrowItem> borrowList) {
+    public BorrowAdapter(List<BorrowItem> borrowList) {
+        // Fix: Properly assign the passed list and prevent null reference crashes
+        this.list = borrowList != null ? borrowList : new ArrayList<>();
     }
 
     @NonNull
@@ -29,13 +30,16 @@ public class BorrowAdapter extends RecyclerView.Adapter<BorrowAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        com.nibm.rebooknew.BorrowItem item = list.get(position);
+        BorrowItem item = list.get(position);
         holder.text1.setText(item.getTitle());
         holder.text2.setText("Due: " + item.getDueDate() + " | Status: " + item.getStatus());
     }
 
     @Override
-    public int getItemCount() { return list.size(); }
+    public int getItemCount() {
+        // Fix: Ensure safe size evaluation
+        return list != null ? list.size() : 0;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView text1, text2;

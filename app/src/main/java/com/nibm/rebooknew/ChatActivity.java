@@ -33,6 +33,11 @@ public class ChatActivity extends AppCompatActivity {
         // Ensure this matches your XML file name
         setContentView(R.layout.activity_chat);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+
         // Initialize Views
         RecyclerView rvChat = findViewById(R.id.rvChat);
         EditText edtMessage = findViewById(R.id.edtMessage);
