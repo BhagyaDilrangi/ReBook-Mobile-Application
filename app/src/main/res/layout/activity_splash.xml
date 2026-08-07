@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E8F2FF"
+    android:background="#1B1340"
     android:gravity="center">
 
     <LinearLayout
@@ -13,44 +13,70 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- App Logo Card / Bubbly Icon Container -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="4dp"
-            app:strokeColor="#2196F3"
-            app:strokeWidth="1dp">
+        <!-- Center Row containing Left Badge, Logo Card, and Right Badge -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="22dp"
-                android:src="@drawable/ic_inventory"
-                app:tint="#1A237E" />
-        </androidx.cardview.widget.CardView>
+            <!-- Left Small Square Badge -->
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#FFFFFF"
+                android:layout_marginEnd="16dp" />
+
+            <!-- App Logo Card Container -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardLogo"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:cardBackgroundColor="#F0F4FF"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="22dp"
+                    android:src="@drawable/ic_book_stack"
+                    android:scaleType="centerInside"
+                    app:tint="#1B1340" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Right Small Square Badge -->
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#FFFFFF"
+                android:layout_marginStart="16dp" />
+
+        </LinearLayout>
 
         <!-- App Name -->
         <TextView
+            android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:text="ReBook"
-            android:textColor="#1A237E"
-            android:textSize="32sp"
-            android:letterSpacing="0.05"
-            android:layout_marginBottom="8dp" />
+            android:fontFamily="serif"
+            android:text="Rebook"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
 
-        <!-- Tagline -->
+        <!-- Typewriter Slogan -->
         <TextView
+            android:id="@+id/txtTagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Your Campus Marketplace &amp; Exchange"
-            android:textColor="#546E7A"
-            android:textSize="14sp" />
+            android:fontFamily="serif"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
