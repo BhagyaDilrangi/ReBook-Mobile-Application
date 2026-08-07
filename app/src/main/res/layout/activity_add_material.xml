@@ -1,95 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
-    android:padding="16dp">
+    android:background="#E8F2FF">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="List New Material"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Title Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Material Title"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etMaterialTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Category/Type Spinner -->
-        <Spinner
-            android:id="@+id/spinnerMaterialType"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
-
-        <!-- Price Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price (LKR)"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etMaterialPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Upload Buttons Area -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
-            <Button
-                android:id="@+id/btnUploadImage"
-                android:layout_width="0dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Title Header -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="Upload Images" />
-            <Button
-                android:id="@+id/btnUploadPreview"
-                android:layout_width="0dp"
+                android:text="List New Material"
+                android:textSize="24sp"
+                android:textColor="#1A237E"
+                android:fontFamily="sans-serif-black"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Input Form Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Upload Preview" />
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeWidth="1dp"
+                app:strokeColor="#2196F3">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Material Title Input -->
+                    <EditText
+                        android:id="@+id/etMaterialTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:hint="Material title"
+                        android:textColorHint="#1A237E"
+                        android:textColor="#1A237E"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-bold"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@drawable/rounded_input_bg"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Spinner Dropdown -->
+                    <Spinner
+                        android:id="@+id/spinnerMaterialType"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:background="@drawable/rounded_input_bg"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Price Input -->
+                    <EditText
+                        android:id="@+id/etMaterialPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:hint="Price (LKR)"
+                        android:textColorHint="#1A237E"
+                        android:textColor="#1A237E"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-bold"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:inputType="numberDecimal"
+                        android:background="@drawable/rounded_input_bg" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Upload Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUploadImage"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="UPLOAD IMAGE"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="#1A237E"
+                    app:icon="@drawable/ic_add_new"
+                    app:iconTint="#1A237E"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="28dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#2196F3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUploadPreview"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="IMAGE PREVIEW"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="#1A237E"
+                    app:icon="@drawable/ic_inventory"
+                    app:iconTint="#1A237E"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="28dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#2196F3" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
+
+            <!-- Publish Listing Primary Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPublishListing"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="PUBLISH LISTING"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#2196F3"
+                app:cornerRadius="30dp"
+                android:elevation="4dp" />
+
         </LinearLayout>
+    </ScrollView>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnPublishListing"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Publish Listing"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-</ScrollView>
+</RelativeLayout>

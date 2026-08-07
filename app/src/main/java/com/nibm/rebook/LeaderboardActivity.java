@@ -1,35 +1,37 @@
 package com.nibm.rebook;
+
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nibm.rebook.CustomAdapter.LeaderboardAdapter;
+import com.nibm.rebook.dto.LeaderboardItem;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity {
-
-    RecyclerView recyclerView;
-    LeaderboardAdapter adapter;
-    ArrayList<LeaderboardModel> list;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_leaderboard);
+        setContentView(R.layout.activity_leaderboard); // Ensure XML name matches
 
-        recyclerView = findViewById(R.id.recyclerViewLeaderboard);
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        list = new ArrayList<>();
+        RecyclerView rvLeaderboard = findViewById(R.id.rvLeaderboard);
+        rvLeaderboard.setLayoutManager(new LinearLayoutManager(this));
 
-        // Dummy Data
-        list.add(new LeaderboardModel("Kasun Perera", 980, 1));
-        list.add(new LeaderboardModel("Nimal Silva", 870, 2));
-        list.add(new LeaderboardModel("Amaya Fernando", 760, 3));
-        list.add(new LeaderboardModel("Kavindi Jay", 650, 4));
+        // Create Dummy Data
+        List<LeaderboardItem> leaderboardList = new ArrayList<>();
+        leaderboardList.add(new LeaderboardItem("Alice Johnson", 1250));
+        leaderboardList.add(new LeaderboardItem("Bob Smith", 1120));
+        leaderboardList.add(new LeaderboardItem("Charlie Davis", 980));
+        leaderboardList.add(new LeaderboardItem("Diana Prince", 850));
 
-        adapter = new LeaderboardAdapter(list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        // Set Adapter
+        LeaderboardAdapter adapter = new LeaderboardAdapter(leaderboardList);
+        rvLeaderboard.setAdapter(adapter);
     }
 }

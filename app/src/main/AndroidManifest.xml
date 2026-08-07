@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET" />
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
@@ -11,94 +10,45 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ReBook">
-
+        android:theme="@style/Theme.ReBookNew">
         <activity
-            android:name=".BuyerChat"
+            android:name=".SalesHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerRequestItems"
+            android:name=".EditMaterialActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerProfile"
+            android:name=".NotificationsActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerSelling"
+            android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerDonating"
+            android:name=".LeaderboardActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerNotesDonate"
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerNotesSales"
+            android:name=".BorrowHistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerPastPaperDonate"
+            android:name=".SellerFeedbackActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerPastpaperSales"
+            android:name=".SalesRequestsActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerBooksSales"
+            android:name=".ItemListing"
             android:exported="false" />
         <activity
-            android:name=".BuyerBooksDonate"
+            android:name=".MyListingsActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerCalculculatorDonate"
+            android:name=".AddMaterialActivity"
             android:exported="false" />
         <activity
-            android:name=".BuyerCalculatarSales"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerBooksFilter"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerPastPapersFilter"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerNotesFilter"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerCalculaterFilter"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerBooks"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerLectureNotes"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerPastPapers"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerPaymentHistory"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerSavedItems"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerReviewPage"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerCardPayment"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerBorowing"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerCalcuator"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerHome"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerRegister"
-            android:exported="false" />
-        <activity
-            android:name=".BuyerLogin"
+            android:name=".SellerDashboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

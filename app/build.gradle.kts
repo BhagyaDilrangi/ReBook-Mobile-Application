@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
+
 }
 
 android {
+    namespace = "com.nibm.rebook"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -10,6 +12,7 @@ android {
     }
 
     defaultConfig {
+        applicationId = "com.nibm.rebooknew"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -41,4 +44,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
 }
