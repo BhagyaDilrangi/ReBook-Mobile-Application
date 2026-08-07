@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nibm.rebooknew"
+    namespace = "com.nibm.rebook"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1

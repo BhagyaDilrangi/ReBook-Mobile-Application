@@ -1,4 +1,4 @@
-package com.nibm.rebooknew;
+package com.nibm.rebook;
 
 import android.content.Context;
 
