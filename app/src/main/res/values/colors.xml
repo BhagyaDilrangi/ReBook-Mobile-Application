@@ -13,4 +13,8 @@
     <color name="banner_yellow">#FFD043</color>
     <color name="text_main">#1E2229</color>
     <color name="text_sub">#969BAB</color>
+
+    <!-- Added missing colors -->
+    <color name="primary">#1A237E</color>
+    <color name="lightGray">#D3D3D3</color>
 </resources>

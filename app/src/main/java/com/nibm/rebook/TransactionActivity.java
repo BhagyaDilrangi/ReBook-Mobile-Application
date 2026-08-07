@@ -1,5 +1,6 @@
 package com.nibm.rebook;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +21,7 @@ public class TransactionActivity extends AppCompatActivity {
 
     androidx.appcompat.widget.AppCompatEditText search;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

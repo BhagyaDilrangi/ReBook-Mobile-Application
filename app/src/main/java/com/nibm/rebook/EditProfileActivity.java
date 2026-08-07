@@ -12,13 +12,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     private CircleImageView imgProfile;
     private ImageView btnUploadCamera;
-    private EditText edtFirstName, edtLastName, edtEmail, edtPhone, edtAddress;
+    private EditText edtFirstName, edtLastName, edtEmail;
     private Uri imageUri = null;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
@@ -48,8 +49,8 @@ public class EditProfileActivity extends AppCompatActivity {
         edtFirstName = findViewById(R.id.edtFirstName);
         edtLastName = findViewById(R.id.edtLastName);
         edtEmail = findViewById(R.id.edtEmail);
-        edtPhone = findViewById(R.id.edtPhone);
-        edtAddress = findViewById(R.id.edtAddress);
+        EditText edtPhone = findViewById(R.id.edtPhone);
+        EditText edtAddress = findViewById(R.id.edtAddress);
 
         // Open gallery when clicking the camera badge
         btnUploadCamera.setOnClickListener(v -> openImageGallery());
@@ -59,8 +60,10 @@ public class EditProfileActivity extends AppCompatActivity {
             String firstName = edtFirstName.getText().toString().trim();
             String lastName = edtLastName.getText().toString().trim();
             String email = edtEmail.getText().toString().trim();
+            String phone = edtPhone.getText().toString().trim();
+            String address = edtAddress.getText().toString().trim();
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty()) {
                 Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -76,9 +79,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         // Change password click listener
-        findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
-            Toast.makeText(this, "Change Password clicked", Toast.LENGTH_SHORT).show();
-        });
+        findViewById(R.id.btnChangePassword).setOnClickListener(v -> Toast.makeText(this, "Change Password clicked", Toast.LENGTH_SHORT).show());
     }
 
     private void openImageGallery() {

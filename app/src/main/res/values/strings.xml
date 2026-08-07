@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">ReBook</string>
     <string name="available_calculators">Available Calculators</string>
+    <string name="open">Open navigation drawer</string>
+    <string name="close">Close navigation drawer</string>
+
+    <!-- Navigation Drawer Items -->
+    <string name="nav_students">Students</string>
+    <string name="nav_materials">Materials</string>
+    <string name="nav_reports">Reports</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_feedback">Feedback</string>
+    <string name="nav_leaderboard">Leaderboard</string>
+    <string name="nav_logout">Logout</string>
+    <string name="nav_add">Add Material</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_requests">Requests</string>
+    <string name="nav_history_sales">Sales History</string>
+    <string name="nav_history_borrow">Borrow History</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_profile">Profile</string>
 </resources>

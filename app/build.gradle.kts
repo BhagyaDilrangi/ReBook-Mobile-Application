@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nibm.rebooknew"
+        applicationId = "com.nibm.rebook"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
