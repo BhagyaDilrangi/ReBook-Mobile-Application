@@ -1,10 +1,19 @@
 package com.nibm.rebook;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nibm.rebook.CustomAdapter.ListingAdapter;
 import com.nibm.rebook.dto.Material;
 
@@ -16,13 +25,20 @@ public class MyListingsActivity extends AppCompatActivity {
     private RecyclerView rvMyListings;
     private ListingAdapter adapter;
     private List<Material> materialList;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_listings);
 
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("materials");
 
         // 1. Initialize the RecyclerView
         rvMyListings = findViewById(R.id.rvMyListings);
@@ -30,24 +46,39 @@ public class MyListingsActivity extends AppCompatActivity {
 
         // 2. Prepare the data list
         materialList = new ArrayList<>();
-        loadSampleData(); // Replace this with your actual database fetch logic
 
         // 3. Initialize and set the Adapter
         adapter = new ListingAdapter(materialList);
         rvMyListings.setAdapter(adapter);
+
+        // 4. Fetch User's Listings from Firebase
+        fetchMyListings();
     }
 
-    private void loadSampleData() {
-        // Adding 10 diverse dummy items
-        materialList.add(new Material("Data Structures Notes", "Available"));
-        materialList.add(new Material("Financial Accounting Book", "Sold"));
-        materialList.add(new Material("Advanced Calculus Guide", "Borrowed"));
-        materialList.add(new Material("Introduction to Psychology", "Available"));
-        materialList.add(new Material("Java Programming Handbook", "Reserved"));
-        materialList.add(new Material("Business Ethics Case Studies", "Available"));
-        materialList.add(new Material("Principles of Marketing", "Sold"));
-        materialList.add(new Material("Engineering Mathematics I", "Borrowed"));
-        materialList.add(new Material("Database Systems Workbook", "Available"));
-        materialList.add(new Material("Research Methodology Manual", "Reserved"));
+    private void fetchMyListings() {
+        if (mAuth.getCurrentUser() == null) return;
+        
+        String currentUserId = mAuth.getCurrentUser().getUid();
+
+        // Query materials where sellerId matches current user
+        mDatabase.orderByChild("sellerId").equalTo(currentUserId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        materialList.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            Material material = dataSnapshot.getValue(Material.class);
+                            if (material != null) {
+                                materialList.add(material);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MyListingsActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

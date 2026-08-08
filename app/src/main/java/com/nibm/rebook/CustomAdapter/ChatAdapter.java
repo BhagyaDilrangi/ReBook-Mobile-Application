@@ -19,7 +19,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use a simple layout for now; you can replace this with custom layouts for "bubble" styling
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(android.R.layout.simple_list_item_1, parent, false);
         return new ViewHolder(view);
@@ -27,12 +26,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChatMessage message = chatList.get(position);
-        holder.textView.setText(message.getMessage());
+        if (chatList != null && position < chatList.size()) {
+            ChatMessage message = chatList.get(position);
+            holder.textView.setText(message.getMessage());
+        }
     }
 
     @Override
-    public int getItemCount() { return chatList.size(); }
+    public int getItemCount() { return chatList != null ? chatList.size() : 0; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;

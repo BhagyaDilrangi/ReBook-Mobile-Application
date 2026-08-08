@@ -2,11 +2,10 @@ package com.nibm.rebook;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -15,10 +14,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.nibm.rebook.dto.Material;
+
 public class AddMaterialActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private Button btnPublish;
+    private EditText etTitle, etPrice;
+    private Spinner spinnerType, spinnerCategory;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,16 +37,28 @@ public class AddMaterialActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("materials");
+
         // Initialize UI Elements
         progressBar = findViewById(R.id.progressBar);
         btnPublish = findViewById(R.id.btnPublishListing);
-        Spinner spinner = findViewById(R.id.spinnerMaterialType);
+        etTitle = findViewById(R.id.etMaterialTitle);
+        etPrice = findViewById(R.id.etMaterialPrice);
+        spinnerType = findViewById(R.id.spinnerMaterialType);
+        spinnerCategory = findViewById(R.id.spinnerCategory);
 
-        // Spinner Setup
-        String[] types = {"Sale", "Borrow", "Donate", "Exchange"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        // Spinner Setup for Types
+        String[] types = {"Sale", "Borrow", "Donate"};
+        ArrayAdapter<String> adapterType = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, types);
-        spinner.setAdapter(adapter);
+        spinnerType.setAdapter(adapterType);
+
+        // Spinner Setup for Categories
+        String[] categories = {"Books", "Notes", "Past Papers", "Calculators"};
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, categories);
+        spinnerCategory.setAdapter(adapterCategory);
 
         // Upload Buttons
         Button btnUploadImage = findViewById(R.id.btnUploadImage);
@@ -49,19 +69,41 @@ public class AddMaterialActivity extends AppCompatActivity {
 
         // Publish Logic
         btnPublish.setOnClickListener(v -> {
+            String title = etTitle.getText().toString().trim();
+            String priceStr = etPrice.getText().toString().trim();
+            String type = spinnerType.getSelectedItem().toString();
+            String category = spinnerCategory.getSelectedItem().toString();
+
+            if (title.isEmpty() || priceStr.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double price = Double.parseDouble(priceStr);
+            String sellerId = mAuth.getCurrentUser().getUid();
+
             // 1. Show Loading UI
             btnPublish.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
 
-            // 2. Simulate Upload (Using Looper.getMainLooper() for stability)
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                // 3. UI Success Feedback
-                Toast.makeText(this, "Listing Published Successfully!", Toast.LENGTH_SHORT).show();
-
-                // 4. Navigate to Inventory
-                startActivity(new Intent(AddMaterialActivity.this, MyListingsActivity.class));
-                finish();
-            }, 2000);
+            // 2. Save to Firebase
+            String materialId = mDatabase.push().getKey();
+            Material newMaterial = new Material(materialId, title, "Available", type, category, sellerId, price);
+            
+            if (materialId != null) {
+                mDatabase.child(materialId).setValue(newMaterial)
+                        .addOnCompleteListener(task -> {
+                            progressBar.setVisibility(View.GONE);
+                            btnPublish.setEnabled(true);
+                            if (task.isSuccessful()) {
+                                Toast.makeText(this, "Listing Published Successfully!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(AddMaterialActivity.this, MyListingsActivity.class));
+                                finish();
+                            } else {
+                                Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
         });
     }
 
@@ -70,7 +112,6 @@ public class AddMaterialActivity extends AppCompatActivity {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    // TODO: Handle the file URI (e.g., save it or set it to an ImageView)
                     Toast.makeText(this, "File Selected", Toast.LENGTH_SHORT).show();
                 }
             });

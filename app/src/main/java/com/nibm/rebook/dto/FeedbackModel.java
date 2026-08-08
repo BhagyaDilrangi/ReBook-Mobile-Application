@@ -1,4 +1,4 @@
-package com.nibm.rebook;
+package com.nibm.rebook.dto;
 
 public class FeedbackModel {
 

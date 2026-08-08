@@ -3,7 +3,6 @@ package com.nibm.rebook;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -17,7 +16,6 @@ import java.util.Map;
 public class UserRegisterActivity extends AppCompatActivity {
 
     EditText etFirstName, etLastName, etEmail, etTele, etPassword, etConfirmPassword;
-    CheckBox cbSellerRole;
     Button btnRegister;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -25,11 +23,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_register); // Matches your provided layout XML file
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        setContentView(R.layout.activity_user_register);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users");
@@ -39,8 +33,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.edit_regi_email);
         etTele = findViewById(R.id.edit_regi_tele);
         etPassword = findViewById(R.id.edit_regi_passward);
-        etConfirmPassword = findViewById(R.id.edit_regi_confirmedpassword); // Corrected ID matching XML
-        cbSellerRole = findViewById(R.id.cb_remember_me); // Checkbox for "Also Want to Sell"
+        etConfirmPassword = findViewById(R.id.edit_regi_conformedpassward);
         btnRegister = findViewById(R.id.regi_btnregister);
 
         btnRegister.setOnClickListener(v -> {
@@ -51,10 +44,6 @@ public class UserRegisterActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             String confPass = etConfirmPassword.getText().toString().trim();
 
-            // Check if checkbox is checked to assign role
-            boolean isSeller = cbSellerRole.isChecked();
-            String userRole = isSeller ? "Seller" : "Buyer";
-
             if (fName.isEmpty() || lName.isEmpty() || email.isEmpty() || tele.isEmpty() || password.isEmpty() || confPass.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
@@ -62,11 +51,6 @@ public class UserRegisterActivity extends AppCompatActivity {
 
             if (!password.equals(confPass)) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (password.length() < 6) {
-                Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -79,7 +63,6 @@ public class UserRegisterActivity extends AppCompatActivity {
                             userData.put("lastName", lName);
                             userData.put("email", email);
                             userData.put("telephone", tele);
-                            userData.put("role", userRole); // Store role in database
 
                             mDatabase.child(uid).setValue(userData)
                                     .addOnSuccessListener(aVoid -> {
@@ -87,14 +70,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                                                 .setTitle("Success")
                                                 .setMessage("Thank you for registering!")
                                                 .setPositiveButton("OK", (dialog, which) -> {
-                                                    // Conditional redirection based on checkbox status
-                                                    Intent intent;
-                                                    if (isSeller) {
-                                                        intent = new Intent(UserRegisterActivity.this, SellerDashboardActivity.class);
-                                                    } else {
-                                                        intent = new Intent(UserRegisterActivity.this, BuyerHome.class);
-                                                    }
-                                                    startActivity(intent);
+                                                    startActivity(new Intent(UserRegisterActivity.this, UserLoginActivity.class));
                                                     finish();
                                                 })
                                                 .show();

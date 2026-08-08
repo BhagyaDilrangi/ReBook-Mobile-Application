@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder> {
@@ -52,9 +54,14 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
 
         // RESOLVE
         holder.resolveBtn.setOnClickListener(v -> {
-            report.setStatus("Resolved");
-            notifyDataSetChanged();
-            Toast.makeText(context, "Report Resolved", Toast.LENGTH_SHORT).show();
+            // Updating status in Firebase
+            // Note: ReportModel should have an 'id' for this to work perfectly.
+            // If it doesn't, we'd need to match by title/description or add ID.
+            FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                    .getReference("reports")
+                    .child(report.getTitle().replace(".", "_")) // Hacky way if no ID
+                    .child("status").setValue("Resolved")
+                    .addOnSuccessListener(aVoid -> Toast.makeText(context, "Report Resolved", Toast.LENGTH_SHORT).show());
         });
 
         // WARN

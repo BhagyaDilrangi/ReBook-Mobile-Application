@@ -4,11 +4,18 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -18,6 +25,7 @@ public class TransactionActivity extends AppCompatActivity {
     TransactionAdapter adapter;
     ArrayList<TransactionModel> list;
     ArrayList<TransactionModel> filteredList;
+    DatabaseReference mDatabase;
 
     androidx.appcompat.widget.AppCompatEditText search;
 
@@ -33,17 +41,34 @@ public class TransactionActivity extends AppCompatActivity {
         list = new ArrayList<>();
         filteredList = new ArrayList<>();
 
-        // Dummy Data
-        list.add(new TransactionModel("T001", "Kasun Perera", "2500", "Paid"));
-        list.add(new TransactionModel("T002", "Nimal Silva", "1800", "Pending"));
-        list.add(new TransactionModel("T003", "Amaya Fernando", "3200", "Failed"));
-        list.add(new TransactionModel("T004", "Kavindi Jay", "1500", "Paid"));
-
-        filteredList.addAll(list);
+        // Initialize Firebase Database Reference
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("transactions");
 
         adapter = new TransactionAdapter(filteredList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        // Fetch data from Firebase
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    TransactionModel transaction = dataSnapshot.getValue(TransactionModel.class);
+                    if (transaction != null) {
+                        list.add(transaction);
+                    }
+                }
+                filteredList.clear();
+                filteredList.addAll(list);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(TransactionActivity.this, "Failed to load transactions: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // SEARCH
         search.addTextChangedListener(new TextWatcher() {
@@ -64,8 +89,8 @@ public class TransactionActivity extends AppCompatActivity {
         filteredList.clear();
 
         for (TransactionModel t : list) {
-            if (t.getCustomer().toLowerCase().contains(text.toLowerCase()) ||
-                    t.getId().toLowerCase().contains(text.toLowerCase())) {
+            if ((t.getCustomer() != null && t.getCustomer().toLowerCase().contains(text.toLowerCase())) ||
+                    (t.getId() != null && t.getId().toLowerCase().contains(text.toLowerCase()))) {
                 filteredList.add(t);
             }
         }

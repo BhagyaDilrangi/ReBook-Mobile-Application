@@ -4,10 +4,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -18,6 +26,7 @@ public class MaterialActivity extends AppCompatActivity {
     ArrayList<MaterialModel> list;
     ArrayList<MaterialModel> filteredList;
     EditText search;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +39,34 @@ public class MaterialActivity extends AppCompatActivity {
         list = new ArrayList<>();
         filteredList = new ArrayList<>();
 
-        // Dummy Data
-        list.add(new MaterialModel("Math Notes", "PDF", "Available"));
-        list.add(new MaterialModel("Science Guide", "Video", "Hidden"));
-        list.add(new MaterialModel("English Book", "PDF", "Available"));
-        list.add(new MaterialModel("IT Lecture", "Video", "Deleted"));
-
-        filteredList.addAll(list);
+        // Initialize Firebase Database Reference
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("materials");
 
         adapter = new MaterialAdapter(filteredList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        // Fetch data from Firebase
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    MaterialModel material = dataSnapshot.getValue(MaterialModel.class);
+                    if (material != null) {
+                        list.add(material);
+                    }
+                }
+                filteredList.clear();
+                filteredList.addAll(list);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MaterialActivity.this, "Failed to load materials: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Search
         search.addTextChangedListener(new TextWatcher() {
@@ -61,7 +87,7 @@ public class MaterialActivity extends AppCompatActivity {
         filteredList.clear();
 
         for (MaterialModel m : list) {
-            if (m.getTitle().toLowerCase().contains(text.toLowerCase())) {
+            if (m.getTitle() != null && m.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(m);
             }
         }

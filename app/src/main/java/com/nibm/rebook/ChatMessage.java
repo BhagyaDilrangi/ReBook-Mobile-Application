@@ -1,4 +1,4 @@
-package com.nibm.rebook.dto;
+package com.nibm.rebook;
 
 /**
  * Model class for chat messages used across the application.
@@ -22,7 +22,7 @@ public class ChatMessage {
         this.timestamp = timestamp;
     }
 
-    // Constructor for UI/Local usage
+    // Constructor for UI/Local usage (e.g. ChatActivity)
     public ChatMessage(String message, boolean isSentByUser) {
         this.message = message;
         this.isSentByUser = isSentByUser;

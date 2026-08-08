@@ -5,9 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -36,23 +39,27 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
         holder.type.setText(material.getType());
         holder.status.setText(material.getStatus());
 
-        // VIEW
-        holder.viewBtn.setOnClickListener(v -> {
-            material.setStatus("Available");
-            notifyDataSetChanged();
-        });
+        // VIEW (Make Available)
+        holder.viewBtn.setOnClickListener(v -> updateStatus(material, "Available", v.getContext()));
 
         // HIDE
-        holder.hideBtn.setOnClickListener(v -> {
-            material.setStatus("Hidden");
-            notifyDataSetChanged();
-        });
+        holder.hideBtn.setOnClickListener(v -> updateStatus(material, "Hidden", v.getContext()));
 
         // DELETE
-        holder.deleteBtn.setOnClickListener(v -> {
-            material.setStatus("Deleted");
-            notifyDataSetChanged();
-        });
+        holder.deleteBtn.setOnClickListener(v -> updateStatus(material, "Deleted", v.getContext()));
+    }
+
+    private void updateStatus(MaterialModel material, String status, android.content.Context context) {
+        // Ideally MaterialModel should have an ID. 
+        // If not, we use the title as a key (less safe but works with the current dummy data structure)
+        String key = material.getTitle().replace(".", "_").replace("#", "_").replace("$", "_").replace("[", "_").replace("]", "_");
+        
+        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("materials")
+                .child(key)
+                .child("status").setValue(status)
+                .addOnSuccessListener(aVoid -> Toast.makeText(context, "Material " + status, Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override

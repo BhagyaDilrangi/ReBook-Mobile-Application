@@ -13,16 +13,50 @@
         android:padding="16dp"
         android:orientation="vertical">
 
-        <TextView android:id="@+id/txtMaterialTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="16sp" />
-        <TextView android:id="@+id/txtBuyerName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/txtMaterialTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtBuyerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#2196F3"
+            android:textStyle="italic" />
 
         <LinearLayout
+            android:id="@+id/layoutActions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="12dp">
-            <Button android:id="@+id/btnAccept" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Accept" android:backgroundTint="#4CAF50" />
-            <Button android:id="@+id/btnReject" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="Reject" android:backgroundTint="#F44336" />
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Accept"
+                android:backgroundTint="#4CAF50" />
+
+            <Button
+                android:id="@+id/btnReject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Reject"
+                android:backgroundTint="#F44336" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

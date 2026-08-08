@@ -1,18 +1,26 @@
 package com.nibm.rebook;
 
-import android.content.Intent; // IMPORTANT: Must be imported
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SellerDashboardActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
+    private boolean isVerified = false;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +31,12 @@ public class SellerDashboardActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        mAuth = FirebaseAuth.getInstance();
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
+
+        // Check user verification status from Firebase
+        checkUserVerification();
 
         // Profile Drawer Trigger
         findViewById(R.id.imgProfile).setOnClickListener(v ->
@@ -32,10 +44,10 @@ public class SellerDashboardActivity extends AppCompatActivity {
 
         // 1. Dashboard Card Listeners
         findViewById(R.id.cardAddMaterial).setOnClickListener(v -> {
-            if (isUserVerified()) {
+            if (isVerified) {
                 startActivity(new Intent(this, AddMaterialActivity.class));
             } else {
-                Toast.makeText(this, "Account must be verified!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Account must be verified by Admin!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -52,7 +64,10 @@ public class SellerDashboardActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_add) startActivity(new Intent(SellerDashboardActivity.this, AddMaterialActivity.class));
+            if (id == R.id.nav_add) {
+                if (isVerified) startActivity(new Intent(SellerDashboardActivity.this, AddMaterialActivity.class));
+                else Toast.makeText(this, "Account not verified", Toast.LENGTH_SHORT).show();
+            }
             else if (id == R.id.nav_inventory) startActivity(new Intent(SellerDashboardActivity.this, MyListingsActivity.class));
             else if (id == R.id.nav_requests) startActivity(new Intent(SellerDashboardActivity.this, SalesRequestsActivity.class));
             else if (id == R.id.nav_history_sales) startActivity(new Intent(SellerDashboardActivity.this, SalesHistoryActivity.class));
@@ -62,8 +77,9 @@ public class SellerDashboardActivity extends AppCompatActivity {
             else if (id == R.id.nav_leaderboard) startActivity(new Intent(SellerDashboardActivity.this, LeaderboardActivity.class));
             else if (id == R.id.nav_profile) startActivity(new Intent(SellerDashboardActivity.this, EditProfileActivity.class));
             else if (id == R.id.nav_logout) {
-                // Implement Logout Logic Here
-                Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                startActivity(new Intent(SellerDashboardActivity.this, RoleSelectionActivity.class));
+                finish();
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -71,7 +87,24 @@ public class SellerDashboardActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isUserVerified() {
-        return true;
+    private void checkUserVerification() {
+        if (mAuth.getCurrentUser() == null) return;
+        
+        String uid = mAuth.getCurrentUser().getUid();
+        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("users").child(uid)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String status = snapshot.child("status").getValue(String.class);
+                            isVerified = "Verified".equalsIgnoreCase(status);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 }

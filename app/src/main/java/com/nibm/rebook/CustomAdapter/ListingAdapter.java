@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nibm.rebook.BuyerBorowing;
+import com.nibm.rebook.BuyerDonating;
+import com.nibm.rebook.BuyerSelling;
 import com.nibm.rebook.EditMaterialActivity;
 import com.nibm.rebook.dto.Material;
 import com.nibm.rebook.R;
@@ -18,9 +21,16 @@ import java.util.List;
 public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHolder> {
 
     private List<Material> materialList;
+    private boolean isBuyer;
 
     public ListingAdapter(List<Material> materialList) {
         this.materialList = materialList;
+        this.isBuyer = false;
+    }
+
+    public ListingAdapter(List<Material> materialList, boolean isBuyer) {
+        this.materialList = materialList;
+        this.isBuyer = isBuyer;
     }
 
     @NonNull
@@ -36,16 +46,41 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
         Material material = materialList.get(position);
 
         holder.txtMaterialName.setText(material.getTitle());
-        holder.txtMaterialStatus.setText("Status: " + material.getStatus());
+        holder.txtMaterialStatus.setText(isBuyer ? "Type: " + material.getType() : "Status: " + material.getStatus());
 
-        holder.btnEdit.setOnClickListener(v -> {
-            android.content.Context context = v.getContext();
-            Intent intent = new Intent(context, EditMaterialActivity.class);
-            intent.putExtra("material_title", material.getTitle());
-            // Pass price or ID if your Material DTO supports it, e.g.:
-            // intent.putExtra("material_price", material.getPrice());
-            context.startActivity(intent);
-        });
+        if (isBuyer) {
+            holder.btnAction.setText("Get Item");
+            holder.btnAction.setOnClickListener(v -> {
+                android.content.Context context = v.getContext();
+                Intent intent;
+                
+                String type = material.getType();
+                if ("Sale".equalsIgnoreCase(type)) {
+                    intent = new Intent(context, BuyerSelling.class);
+                } else if ("Borrow".equalsIgnoreCase(type)) {
+                    intent = new Intent(context, BuyerBorowing.class);
+                } else if ("Donate".equalsIgnoreCase(type)) {
+                    intent = new Intent(context, BuyerDonating.class);
+                } else {
+                    intent = new Intent(context, BuyerSelling.class);
+                }
+                
+                intent.putExtra("MATERIAL_ID", material.getId());
+                intent.putExtra("MATERIAL_TITLE", material.getTitle());
+                intent.putExtra("MATERIAL_PRICE", String.valueOf(material.getPrice()));
+                intent.putExtra("SELLER_ID", material.getSellerId());
+                context.startActivity(intent);
+            });
+        } else {
+            holder.btnAction.setText("Edit");
+            holder.btnAction.setOnClickListener(v -> {
+                android.content.Context context = v.getContext();
+                Intent intent = new Intent(context, EditMaterialActivity.class);
+                intent.putExtra("MATERIAL_ID", material.getId());
+                intent.putExtra("material_title", material.getTitle());
+                context.startActivity(intent);
+            });
+        }
     }
 
     @Override
@@ -55,13 +90,13 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtMaterialName, txtMaterialStatus;
-        Button btnEdit;
+        Button btnAction;
 
         public ViewHolder(View itemView) {
             super(itemView);
             txtMaterialName = itemView.findViewById(R.id.txtMaterialName);
             txtMaterialStatus = itemView.findViewById(R.id.txtMaterialStatus);
-            btnEdit = itemView.findViewById(R.id.btnEditListing);
+            btnAction = itemView.findViewById(R.id.btnEditListing);
         }
     }
 }

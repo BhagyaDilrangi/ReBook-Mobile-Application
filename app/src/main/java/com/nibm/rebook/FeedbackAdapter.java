@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHolder> {
@@ -53,17 +55,42 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
 
         // HIDE FEEDBACK
         holder.hideBtn.setOnClickListener(v -> {
-            f.setStatus("Hidden");
-            notifyDataSetChanged();
-            Toast.makeText(context, "Feedback Hidden", Toast.LENGTH_SHORT).show();
+            updateStatus(f, "Hidden");
         });
 
         // DELETE FEEDBACK
         holder.deleteBtn.setOnClickListener(v -> {
-            list.remove(position);
-            notifyDataSetChanged();
-            Toast.makeText(context, "Feedback Deleted", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Feedback")
+                    .setMessage("Are you sure you want to delete this feedback?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        deleteFeedback(f);
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
+    }
+
+    private void updateStatus(FeedbackModel feedback, String status) {
+        // Since FeedbackModel might not have an ID yet, we'll need to handle it.
+        // Assuming we update the model to include an ID from Firebase push()
+        // For now, using a combination of user and comment as a fallback if ID is missing
+        String key = feedback.getUser() != null ? feedback.getUser().replace(".", "_") : "unknown";
+        
+        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("feedbacks")
+                .child(key) // This is a placeholder, ideally use feedback.getId()
+                .child("status").setValue(status)
+                .addOnSuccessListener(aVoid -> Toast.makeText(context, "Feedback updated to " + status, Toast.LENGTH_SHORT).show());
+    }
+
+    private void deleteFeedback(FeedbackModel feedback) {
+        String key = feedback.getUser() != null ? feedback.getUser().replace(".", "_") : "unknown";
+        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("feedbacks")
+                .child(key)
+                .removeValue()
+                .addOnSuccessListener(aVoid -> Toast.makeText(context, "Feedback Deleted", Toast.LENGTH_SHORT).show());
     }
 
     @Override

@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
@@ -58,17 +60,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         // MARK AS PAID
         holder.paidBtn.setOnClickListener(v -> {
-            t.setStatus("Paid");
-            notifyDataSetChanged();
-            Toast.makeText(context, "Marked as Paid", Toast.LENGTH_SHORT).show();
+            updateTransactionStatus(t.getId(), "Paid");
         });
 
         // MARK AS PENDING
         holder.pendingBtn.setOnClickListener(v -> {
-            t.setStatus("Pending");
-            notifyDataSetChanged();
-            Toast.makeText(context, "Marked as Pending", Toast.LENGTH_SHORT).show();
+            updateTransactionStatus(t.getId(), "Pending");
         });
+    }
+
+    private void updateTransactionStatus(String transactionId, String status) {
+        if (transactionId == null) return;
+        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .getReference("transactions")
+                .child(transactionId)
+                .child("status")
+                .setValue(status)
+                .addOnSuccessListener(aVoid -> Toast.makeText(context, "Transaction " + status, Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override

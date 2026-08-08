@@ -4,10 +4,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -18,6 +26,7 @@ public class StudentActivity extends AppCompatActivity {
     ArrayList<StudentModel> list;
     ArrayList<StudentModel> filteredList;
     EditText search;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +39,39 @@ public class StudentActivity extends AppCompatActivity {
         list = new ArrayList<>();
         filteredList = new ArrayList<>();
 
-        // Dummy Data
-        list.add(new StudentModel("Kasun Perera", "kasun@gmail.com", "Pending"));
-        list.add(new StudentModel("Nimal Silva", "nimal@gmail.com", "Verified"));
-        list.add(new StudentModel("Amaya Fernando", "amaya@gmail.com", "Suspended"));
-        list.add(new StudentModel("Kavindi Jay", "kavindi@gmail.com", "Pending"));
-
-        filteredList.addAll(list);
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users");
 
         adapter = new StudentAdapter(filteredList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        // Fetch data from Firebase
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String uid = dataSnapshot.getKey();
+                    String fName = dataSnapshot.child("firstName").getValue(String.class);
+                    String lName = dataSnapshot.child("lastName").getValue(String.class);
+                    String email = dataSnapshot.child("email").getValue(String.class);
+                    String status = dataSnapshot.child("status").getValue(String.class);
+                    
+                    if (status == null) status = "Pending";
+                    
+                    String fullName = (fName != null ? fName : "") + " " + (lName != null ? lName : "");
+                    list.add(new StudentModel(uid, fullName.trim(), email, status));
+                }
+                filteredList.clear();
+                filteredList.addAll(list);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(StudentActivity.this, "Failed to load data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Search Function
         search.addTextChangedListener(new TextWatcher() {
@@ -61,7 +92,7 @@ public class StudentActivity extends AppCompatActivity {
         filteredList.clear();
 
         for (StudentModel s : list) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
+            if (s.getName() != null && s.getName().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(s);
             }
         }

@@ -4,10 +4,17 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nibm.rebook.CustomAdapter.HistoryAdapter;
 import com.nibm.rebook.dto.HistoryItem;
 
@@ -18,6 +25,10 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
     private RecyclerView rvHistory;
     private TextView txtTotalBuyersCount;
+    private List<HistoryItem> historyList;
+    private HistoryAdapter adapter;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,28 +39,50 @@ public class SalesHistoryActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        // Initialize views safely
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("transactions");
+
         rvHistory = findViewById(R.id.rvHistory);
         txtTotalBuyersCount = findViewById(R.id.txtTotalBuyersCount);
 
-        if (rvHistory != null) {
-            rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        historyList = new ArrayList<>();
+        adapter = new HistoryAdapter(historyList);
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        rvHistory.setAdapter(adapter);
 
-            // Create sample data items
-            List<HistoryItem> historyList = new ArrayList<>();
-            historyList.add(new HistoryItem("Calculus Book", "3"));
-            historyList.add(new HistoryItem("Engineering Kit", "1"));
+        fetchSalesHistory();
+    }
 
-            // Update summary text
-            if (txtTotalBuyersCount != null) {
-                txtTotalBuyersCount.setText("Total Transactions Tracked: " + historyList.size());
-            }
+    private void fetchSalesHistory() {
+        if (mAuth.getCurrentUser() == null) return;
+        String sellerId = mAuth.getCurrentUser().getUid();
 
-            // Attach Adapter
-            HistoryAdapter adapter = new HistoryAdapter(historyList);
-            rvHistory.setAdapter(adapter);
-        } else {
-            Toast.makeText(this, "Error initializing list view layout.", Toast.LENGTH_SHORT).show();
-        }
+        mDatabase.orderByChild("sellerId").equalTo(sellerId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        historyList.clear();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            String type = data.child("type").getValue(String.class);
+                            String status = data.child("status").getValue(String.class);
+                            
+                            // Only count Sales that are Paid or Accepted
+                            if ("Sale".equals(type) && ("Paid".equals(status) || "Accepted".equals(status))) {
+                                String title = data.child("materialTitle").getValue(String.class);
+                                String buyer = data.child("buyerName").getValue(String.class);
+                                historyList.add(new HistoryItem(title, "Buyer: " + buyer));
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        if (txtTotalBuyersCount != null) {
+                            txtTotalBuyersCount.setText("Total Sales: " + historyList.size());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(SalesHistoryActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

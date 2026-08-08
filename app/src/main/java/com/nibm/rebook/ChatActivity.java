@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nibm.rebook.CustomAdapter.ChatAdapter;
-import com.nibm.rebook.dto.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,24 +17,27 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView rvChat;
     EditText edtMessage;
+
     Button btnSend;
 
-    private List<ChatMessage> chatList;
+    private List<com.nibm.rebook.ChatMessage> chatList;
     private ChatAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Ensure this matches your XML file name
         setContentView(R.layout.activity_chat);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
+
         // Initialize Views
-        rvChat = findViewById(R.id.rvChat);
-        edtMessage = findViewById(R.id.edtMessage);
-        btnSend = findViewById(R.id.btnSend);
+        RecyclerView rvChat = findViewById(R.id.rvChat);
+        EditText edtMessage = findViewById(R.id.edtMessage);
+        Button btnSend = findViewById(R.id.btnSend);
 
         // Setup Data
         chatList = new ArrayList<>();
@@ -48,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
         btnSend.setOnClickListener(v -> {
             String text = edtMessage.getText().toString();
             if (!text.isEmpty()) {
-                chatList.add(new ChatMessage(text, true));
+                chatList.add(new com.nibm.rebook.ChatMessage(text, true));
                 adapter.notifyDataSetChanged();
                 // Scroll to the latest message
                 rvChat.scrollToPosition(chatList.size() - 1);
