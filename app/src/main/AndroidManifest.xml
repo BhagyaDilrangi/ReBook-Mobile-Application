@@ -12,15 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReBook">
         <activity
-            android:name=".SplashActivity"
-            android:exported="true"
-            android:theme="@style/Theme.ReBook.Splash">
+            android:name=".RoleSelectionActivity"
+            android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserLoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserRegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ReBook.Splash" />
         <activity
             android:name=".SalesHistoryActivity"
             android:exported="false" />
@@ -60,7 +76,6 @@
         <activity
             android:name=".SellerDashboardActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class BuyerLogin extends AppCompatActivity {
+public class UserLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGIN_DEBUG";
     EditText etEmail, etPassword;
@@ -25,7 +25,11 @@ public class BuyerLogin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_buyer_login);
+        setContentView(R.layout.activity_user_login);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -34,8 +38,9 @@ public class BuyerLogin extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnlogin);
         txtRegister = findViewById(R.id.txtregister);
 
+        // Fixed redirection to point directly to BuyerRegister
         txtRegister.setOnClickListener(v ->
-                startActivity(new Intent(BuyerLogin.this, BuyerRegister.class)));
+                startActivity(new Intent(UserLoginActivity.this, UserRegisterActivity.class)));
 
         btnLogin.setOnClickListener(view -> {
             Log.d(TAG, "Login button clicked!");
@@ -63,18 +68,18 @@ public class BuyerLogin extends AppCompatActivity {
                                             Log.d(TAG, "Database onDataChange triggered");
                                             if (snapshot.exists()) {
                                                 Log.d(TAG, "User Profile Found! Redirecting to Home...");
-                                                startActivity(new Intent(BuyerLogin.this, BuyerHome.class));
+                                                startActivity(new Intent(UserLoginActivity.this, BuyerHome.class));
                                                 finish();
                                             } else {
                                                 Log.d(TAG, "Database Error: Profile not found for UID " + uid);
-                                                Toast.makeText(BuyerLogin.this, "Profile not found", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(UserLoginActivity.this, "Profile not found", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         @Override
                                         public void onCancelled(DatabaseError error) {
                                             Log.d(TAG, "Database onCancelled: " + error.getMessage());
-                                            Toast.makeText(BuyerLogin.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(UserLoginActivity.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
                         } else {

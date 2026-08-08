@@ -13,7 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BuyerRegister extends AppCompatActivity {
+public class UserRegisterActivity extends AppCompatActivity {
 
     EditText etFirstName, etLastName, etEmail, etTele, etPassword, etConfirmPassword;
     Button btnRegister;
@@ -23,7 +23,7 @@ public class BuyerRegister extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_buyer_register);
+        setContentView(R.layout.activity_user_register);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users");
@@ -70,7 +70,7 @@ public class BuyerRegister extends AppCompatActivity {
                                                 .setTitle("Success")
                                                 .setMessage("Thank you for registering!")
                                                 .setPositiveButton("OK", (dialog, which) -> {
-                                                    startActivity(new Intent(BuyerRegister.this, BuyerLogin.class));
+                                                    startActivity(new Intent(UserRegisterActivity.this, UserLoginActivity.class));
                                                     finish();
                                                 })
                                                 .show();

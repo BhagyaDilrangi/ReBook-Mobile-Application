@@ -14,7 +14,7 @@ public class BuyerBooksFilter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user_biyer_books_filter);
+        setContentView(R.layout.activity_user_buyer_books_filter);
 
         btndonationsfilter=findViewById(R.id.btndonationsfilter);
         btnborowfilter=findViewById(R.id.btnborowfilter);

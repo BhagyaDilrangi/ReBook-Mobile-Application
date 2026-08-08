@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F8F9FA">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,8 +25,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome User Buyer!"
-                android:textColor="#212529"
+                android:text="Welcome User!"
+                android:textColor="@color/primary"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp" />
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email"
-                android:textColor="#495057"
+                android:textColor="#1B1340"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
@@ -48,14 +48,14 @@
                 android:inputType="textEmailAddress"
                 android:textSize="15sp"
                 android:paddingHorizontal="12dp"
-                android:background="@android:drawable/editbox_background_normal"
+                android:background="@drawable/edittext_bg"
                 android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Password"
-                android:textColor="#495057"
+                android:textColor="#1B1340"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
@@ -69,9 +69,8 @@
                 android:textSize="15sp"
                 android:paddingHorizontal="12dp"
                 android:paddingEnd="40dp"
-                android:background="@android:drawable/editbox_background_normal"
-                android:layout_marginBottom="16dp"
-                 />
+                android:background="@drawable/edittext_bg"
+                android:layout_marginBottom="16dp" />
 
             <Button
                 android:id="@+id/btnlogin"
@@ -82,7 +81,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:backgroundTint="#3B82F6"
+                android:backgroundTint="@color/primary"
                 android:layout_marginBottom="16dp"/>
 
             <LinearLayout
@@ -95,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Don't have an account? "
-                    android:textColor="#868E96"
+                    android:textColor="#607D8B"
                     android:textSize="14sp" />
 
                 <TextView
@@ -104,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:text="Register"
-                    android:textColor="#3B82F6"
+                    android:textColor="#1B1340"
                     android:textStyle="bold"
                     android:textSize="14sp"
                     android:clickable="true"
