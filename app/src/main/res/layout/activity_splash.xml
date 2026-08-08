@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Center Row containing Left Badge, Logo Card, and Right Badge -->
+        <!-- Center Row with Logo Card -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             android:orientation="horizontal"
             android:layout_marginBottom="24dp">
 
-            <!-- Left Small Square Badge -->
+            <!-- Left Small Badge -->
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -37,16 +37,16 @@
                 app:cardCornerRadius="28dp"
                 app:cardElevation="0dp">
 
+                <!-- Splash screen uses ic_book_stack from drawable -->
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="22dp"
                     android:src="@drawable/ic_book_stack"
-                    android:scaleType="centerInside"
-                    app:tint="#1B1340" />
+                    android:scaleType="centerInside" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Right Small Square Badge -->
+            <!-- Right Small Badge -->
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp"

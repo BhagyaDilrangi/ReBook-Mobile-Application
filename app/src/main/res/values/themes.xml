@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Dedicated Splash Theme to prevent white screen flashes -->
+    <style name="Theme.ReBook.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">#1B1340</item>
+        <item name="colorPrimary">#1B1340</item>
+    </style>
 </resources>

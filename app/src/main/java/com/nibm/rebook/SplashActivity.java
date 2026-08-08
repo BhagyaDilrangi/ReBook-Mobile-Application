@@ -33,12 +33,12 @@ public class SplashActivity extends AppCompatActivity {
         View txtTitle = findViewById(R.id.txtTitle);
         txtTagline = findViewById(R.id.txtTagline);
 
-        // Apply bouncing animation to the logo card container
+        // Apply bounce animation to the card container
         try {
             Animation bounceAnimation = AnimationUtils.loadAnimation(this, R.anim.bounce);
             cardLogo.startAnimation(bounceAnimation);
         } catch (Exception e) {
-            // Fallback if animation resource is missing
+            e.printStackTrace();
         }
 
         // Fade in title smoothly
@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
                 index++;
                 handler.postDelayed(this, delay);
             } else {
-                // Wait 1.2 seconds after finishing text typing, then open the main dashboard
+                // Wait 1.2 seconds after finishing text typing, then open MainActivity
                 handler.postDelayed(() -> {
                     Intent intent = new Intent(SplashActivity.this, SellerDashboardActivity.class);
                     startActivity(intent);
