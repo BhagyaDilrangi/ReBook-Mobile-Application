@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nibm.rebook.ChatMessage;
+import com.nibm.rebook.dto.ChatMessage;
 
 import java.util.List;
 

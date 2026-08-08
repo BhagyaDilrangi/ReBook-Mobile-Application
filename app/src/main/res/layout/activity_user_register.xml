@@ -143,7 +143,7 @@
             android:layout_marginBottom="6dp"/>
 
         <EditText
-            android:id="@+id/edit_regi_conformedpassword"
+            android:id="@+id/edit_regi_confirmedpassword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Confirmed password"
