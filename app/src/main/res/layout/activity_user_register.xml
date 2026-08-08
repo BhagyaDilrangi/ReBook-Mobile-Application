@@ -136,17 +136,17 @@
             android:id="@+id/txt_regi_conformedpassward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Conformed Passward"
+            android:text="Confirmed Passward"
             android:textColor="#495057"
             android:textStyle="bold"
             android:textSize="14sp"
             android:layout_marginBottom="6dp"/>
 
         <EditText
-            android:id="@+id/edit_regi_conformedpassward"
+            android:id="@+id/edit_regi_conformedpassword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="Conformed passward"
+            android:hint="Confirmed password"
             android:textSize="15sp"
             android:paddingHorizontal="12dp"
             android:background="@android:drawable/editbox_background_normal"
