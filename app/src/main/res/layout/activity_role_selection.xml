@@ -55,10 +55,11 @@
                 android:orientation="horizontal"
                 android:padding="20dp">
 
+                <!-- Updated to admin icon graphic -->
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/ic_account"
+                    android:src="@drawable/ic_inventory"
                     app:tint="#1B1340" />
 
                 <LinearLayout

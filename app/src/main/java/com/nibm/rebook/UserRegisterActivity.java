@@ -24,16 +24,29 @@ public class UserRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_register);
+<<<<<<< HEAD
+=======
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+>>>>>>> 4862004 (Implement successful admin login)
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("users");
+        // Updated to use the default instance which follows google-services.json
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         etFirstName = findViewById(R.id.edit_regi_firstname);
         etLastName = findViewById(R.id.edit_regi_lastname);
         etEmail = findViewById(R.id.edit_regi_email);
         etTele = findViewById(R.id.edit_regi_tele);
         etPassword = findViewById(R.id.edit_regi_passward);
+<<<<<<< HEAD
         etConfirmPassword = findViewById(R.id.edit_regi_conformedpassward);
+=======
+        etConfirmPassword = findViewById(R.id.edit_regi_confirmedpassword);
+        cbSellerRole = findViewById(R.id.cb_remember_me);
+>>>>>>> 4862004 (Implement successful admin login)
         btnRegister = findViewById(R.id.regi_btnregister);
 
         btnRegister.setOnClickListener(v -> {
@@ -44,6 +57,12 @@ public class UserRegisterActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             String confPass = etConfirmPassword.getText().toString().trim();
 
+<<<<<<< HEAD
+=======
+            boolean isSeller = cbSellerRole.isChecked();
+            String userRole = isSeller ? "Seller" : "Buyer";
+
+>>>>>>> 4862004 (Implement successful admin login)
             if (fName.isEmpty() || lName.isEmpty() || email.isEmpty() || tele.isEmpty() || password.isEmpty() || confPass.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
@@ -63,6 +82,10 @@ public class UserRegisterActivity extends AppCompatActivity {
                             userData.put("lastName", lName);
                             userData.put("email", email);
                             userData.put("telephone", tele);
+<<<<<<< HEAD
+=======
+                            userData.put("role", userRole);
+>>>>>>> 4862004 (Implement successful admin login)
 
                             mDatabase.child(uid).setValue(userData)
                                     .addOnSuccessListener(aVoid -> {
@@ -70,7 +93,17 @@ public class UserRegisterActivity extends AppCompatActivity {
                                                 .setTitle("Success")
                                                 .setMessage("Thank you for registering!")
                                                 .setPositiveButton("OK", (dialog, which) -> {
+<<<<<<< HEAD
                                                     startActivity(new Intent(UserRegisterActivity.this, UserLoginActivity.class));
+=======
+                                                    Intent intent;
+                                                    if (isSeller) {
+                                                        intent = new Intent(UserRegisterActivity.this, SellerDashboardActivity.class);
+                                                    } else {
+                                                        intent = new Intent(UserRegisterActivity.this, BuyerHome.class);
+                                                    }
+                                                    startActivity(intent);
+>>>>>>> 4862004 (Implement successful admin login)
                                                     finish();
                                                 })
                                                 .show();

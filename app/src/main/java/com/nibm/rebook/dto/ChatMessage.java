@@ -14,6 +14,7 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
+<<<<<<< HEAD
     // Constructor for Firebase/Data usage
     public ChatMessage(String message, String senderId, String receiverId, long timestamp) {
         this.message = message;
@@ -23,6 +24,8 @@ public class ChatMessage {
     }
 
     // Constructor for UI/Local usage
+=======
+>>>>>>> 4862004 (Implement successful admin login)
     public ChatMessage(String message, boolean isSentByUser) {
         this.message = message;
         this.isSentByUser = isSentByUser;
@@ -30,6 +33,7 @@ public class ChatMessage {
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
+<<<<<<< HEAD
 
     public String getSenderId() { return senderId; }
     public void setSenderId(String senderId) { this.senderId = senderId; }
@@ -43,3 +47,8 @@ public class ChatMessage {
     public boolean isSentByUser() { return isSentByUser; }
     public void setSentByUser(boolean sentByUser) { isSentByUser = sentByUser; }
 }
+=======
+    public boolean isSentByUser() { return isSentByUser; }
+    public void setSentByUser(boolean sentByUser) { isSentByUser = sentByUser; }
+}
+>>>>>>> 4862004 (Implement successful admin login)
