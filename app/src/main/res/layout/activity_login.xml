@@ -62,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Forgot Password?"
+        android:id="@+id/txtForgotPassword"
         android:textColor="@color/primary"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"/>

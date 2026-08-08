@@ -86,61 +86,9 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Seller Role Card -->
+        <!-- Unified User Role Card (Buyer / Seller combined) -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardSeller"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#F8F9FA"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeColor="#E0E0E0"
-            app:strokeWidth="1dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="20dp">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_inventory"
-                    app:tint="#1B1340" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Seller"
-                        android:textColor="#1B1340"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="List books &amp; manage sales requests"
-                        android:textColor="#607D8B"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Buyer / Student Role Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardBuyer"
+            android:id="@+id/cardUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="#F8F9FA"
@@ -174,7 +122,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Buyer / Student"
+                        android:text="User (Buyer / Seller)"
                         android:textColor="#1B1340"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -182,7 +130,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Browse, buy &amp; borrow learning materials"
+                        android:text="Browse, buy, borrow, or list learning materials"
                         android:textColor="#607D8B"
                         android:textSize="12sp" />
                 </LinearLayout>

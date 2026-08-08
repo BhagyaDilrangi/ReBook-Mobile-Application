@@ -13,49 +13,26 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Center Row with Logo Card -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+        <!-- Enlarged App Logo Card Container (Side badges removed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardLogo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="28dp"
+            app:cardBackgroundColor="#F0F4FF"
+            app:cardCornerRadius="36dp"
+            app:cardElevation="0dp">
 
-            <!-- Left Small Badge -->
-            <View
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="#FFFFFF"
-                android:layout_marginEnd="16dp" />
+            <!-- Splash screen uses ic_book_stack from drawable -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="26dp"
+                android:src="@drawable/ic_book_stack"
+                android:scaleType="centerInside" />
+        </androidx.cardview.widget.CardView>
 
-            <!-- App Logo Card Container -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardLogo"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                app:cardBackgroundColor="#F0F4FF"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="0dp">
-
-                <!-- Splash screen uses ic_book_stack from drawable -->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="22dp"
-                    android:src="@drawable/ic_book_stack"
-                    android:scaleType="centerInside" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Right Small Badge -->
-            <View
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="#FFFFFF"
-                android:layout_marginStart="16dp" />
-
-        </LinearLayout>
-
-        <!-- App Name -->
+        <!-- Enlarged App Name -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
@@ -63,11 +40,11 @@
             android:fontFamily="serif"
             android:text="Rebook"
             android:textColor="#FFFFFF"
-            android:textSize="36sp"
+            android:textSize="44sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
 
-        <!-- Typewriter Slogan -->
+        <!-- Enlarged Typewriter Slogan -->
         <TextView
             android:id="@+id/txtTagline"
             android:layout_width="wrap_content"
@@ -75,7 +52,7 @@
             android:fontFamily="serif"
             android:text=""
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 // Wait 1.2 seconds after finishing text typing, then open MainActivity
                 handler.postDelayed(() -> {
-                    Intent intent = new Intent(SplashActivity.this, SellerDashboardActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, RoleSelectionActivity.class);
                     startActivity(intent);
                     finish();
                 }, 1200);

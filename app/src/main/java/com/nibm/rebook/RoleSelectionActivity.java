@@ -17,8 +17,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
         }
 
         MaterialCardView cardAdmin = findViewById(R.id.cardAdmin);
-        MaterialCardView cardSeller = findViewById(R.id.cardSeller);
-        MaterialCardView cardBuyer = findViewById(R.id.cardBuyer);
+        MaterialCardView cardUser = findViewById(R.id.cardUser);
 
         // Clicking Admin redirects to Admin Login Activity
         cardAdmin.setOnClickListener(v -> {
@@ -27,17 +26,10 @@ public class RoleSelectionActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Clicking Seller redirects to User/Seller Login Activity
-        cardSeller.setOnClickListener(v -> {
+        // Clicking User (Buyer / Seller) redirects to User Login Activity
+        cardUser.setOnClickListener(v -> {
             Intent intent = new Intent(RoleSelectionActivity.this, UserLoginActivity.class);
-            intent.putExtra("USER_ROLE", "SELLER");
-            startActivity(intent);
-        });
-
-        // Clicking Buyer redirects to User/Buyer Login Activity
-        cardBuyer.setOnClickListener(v -> {
-            Intent intent = new Intent(RoleSelectionActivity.this, UserLoginActivity.class);
-            intent.putExtra("USER_ROLE", "BUYER");
+            intent.putExtra("USER_ROLE", "USER");
             startActivity(intent);
         });
     }
