@@ -2,6 +2,7 @@ package com.nibm.rebook;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,9 @@ public class SellerDashboardActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private boolean isVerified = false;
     private FirebaseAuth mAuth;
+    private TextView txtStudentName;
+
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +39,11 @@ public class SellerDashboardActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
 
-        // Check user verification status from Firebase
-        checkUserVerification();
+        // Initialize the student/user name TextView (Ensure ID matches your XML layout file)
+        txtStudentName = findViewById(R.id.txtStudentName);
+
+        // Fetch user profile data (Name & Verification status) from Firebase
+        fetchUserData();
 
         // Profile Drawer Trigger
         findViewById(R.id.imgProfile).setOnClickListener(v ->
@@ -87,23 +94,40 @@ public class SellerDashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void checkUserVerification() {
+    private void fetchUserData() {
         if (mAuth.getCurrentUser() == null) return;
-        
+
         String uid = mAuth.getCurrentUser().getUid();
-        FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        FirebaseDatabase.getInstance(DATABASE_URL)
                 .getReference("users").child(uid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            // 1. Extract and set verification status
                             String status = snapshot.child("status").getValue(String.class);
-                            isVerified = "Verified".equalsIgnoreCase(status);
+                            Boolean isVerifiedBool = snapshot.child("isVerified").getValue(Boolean.class);
+                            isVerified = "Verified".equalsIgnoreCase(status) || (isVerifiedBool != null && isVerifiedBool);
+
+                            // 2. Extract first and last name to display in the student name TextView
+                            String firstName = snapshot.child("firstName").getValue(String.class);
+                            String lastName = snapshot.child("lastName").getValue(String.class);
+
+                            if (txtStudentName != null) {
+                                if (firstName != null && lastName != null) {
+                                    txtStudentName.setText(firstName + " " + lastName);
+                                } else if (firstName != null) {
+                                    txtStudentName.setText(firstName);
+                                } else {
+                                    txtStudentName.setText("User");
+                                }
+                            }
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(SellerDashboardActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

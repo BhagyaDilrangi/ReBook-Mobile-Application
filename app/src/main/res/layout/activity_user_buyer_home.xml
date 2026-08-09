@@ -65,10 +65,18 @@
                     app:searchIcon="@android:drawable/ic_menu_search" />
             </androidx.cardview.widget.CardView>
 
+            <Button
+                android:id="@+id/btnFilterAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Show All Items"
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
+
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:columnCount="2"
                 android:rowCount="2">
 
@@ -180,6 +188,23 @@
                         android:textSize="12sp" />
                 </LinearLayout>
             </GridLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Available Items"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#212121" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBuyerMaterials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
+
         </LinearLayout>
     </ScrollView>
 

@@ -56,8 +56,8 @@ public class MyListingsActivity extends AppCompatActivity {
         // 2. Prepare the data list
         materialList = new ArrayList<>();
 
-        // 3. Initialize and set the Adapter
-        adapter = new ListingAdapter(materialList);
+        // 3. Initialize and set the Adapter (false indicates it's for the seller view, showing edit options)
+        adapter = new ListingAdapter(materialList, false);
         rvMyListings.setAdapter(adapter);
 
         // 4. Fetch User's Listings from Firebase
