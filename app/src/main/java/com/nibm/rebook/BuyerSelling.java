@@ -23,6 +23,8 @@ public class BuyerSelling extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +35,15 @@ public class BuyerSelling extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Get data from intent
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference();
+
+        // Get data safely from intent
         materialId = getIntent().getStringExtra("MATERIAL_ID");
         materialTitle = getIntent().getStringExtra("MATERIAL_TITLE");
         materialPrice = getIntent().getStringExtra("MATERIAL_PRICE");
@@ -44,7 +52,7 @@ public class BuyerSelling extends AppCompatActivity {
         editName = findViewById(R.id.editName);
         editPhone = findViewById(R.id.editPhone);
         editAddress = findViewById(R.id.editAddress);
-        btnRequest = findViewById(R.id.btnUploadSlip); // Based on XML provided
+        btnRequest = findViewById(R.id.btnUploadSlip);
 
         btnRequest.setOnClickListener(v -> {
             String name = editName.getText().toString().trim();
@@ -53,6 +61,11 @@ public class BuyerSelling extends AppCompatActivity {
 
             if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
                 Toast.makeText(this, "Please fill all details", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (materialId == null || materialId.isEmpty()) {
+                Toast.makeText(this, "Error: Invalid material reference.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -71,23 +84,26 @@ public class BuyerSelling extends AppCompatActivity {
         transactionData.put("phone", phone);
         transactionData.put("address", address);
         transactionData.put("materialId", materialId);
-        transactionData.put("materialTitle", materialTitle);
-        transactionData.put("amount", materialPrice);
-        transactionData.put("sellerId", sellerId);
+        transactionData.put("materialTitle", materialTitle != null ? materialTitle : "Untitled");
+        transactionData.put("amount", materialPrice != null ? materialPrice : "0.00");
+        transactionData.put("sellerId", sellerId != null ? sellerId : "");
         transactionData.put("status", "Paid");
         transactionData.put("type", "Sale");
 
         if (transactionId != null) {
+            btnRequest.setEnabled(false);
             mDatabase.child("transactions").child(transactionId).setValue(transactionData)
                     .addOnSuccessListener(aVoid -> {
                         // Update material status to Sold
-                        mDatabase.child("materials").child(materialId).child("status").setValue("Sold");
-                        
-                        Toast.makeText(this, "Purchase Request Sent!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(BuyerSelling.this, BuyerHome.class));
-                        finish();
+                        mDatabase.child("materials").child(materialId).child("status").setValue("Sold")
+                                .addOnCompleteListener(task -> {
+                                    Toast.makeText(this, "Purchase Request Sent Successfully!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(BuyerSelling.this, BuyerHome.class));
+                                    finish();
+                                });
                     })
                     .addOnFailureListener(e -> {
+                        btnRequest.setEnabled(true);
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }

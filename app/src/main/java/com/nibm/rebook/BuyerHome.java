@@ -25,7 +25,7 @@ public class BuyerHome extends AppCompatActivity {
     private RecyclerView rvBuyerMaterials;
     private ListingAdapter adapter;
     private List<Material> materialList;
-    private List<Material> fullMaterialList;
+    private List<Material> fullMaterialList; // Keeps all items for category filtering
     private DatabaseReference mDatabase;
 
     private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
@@ -34,7 +34,7 @@ public class BuyerHome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_buyer_home);
+        setContentView(R.layout.activity_user_buyer_home); 
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -49,6 +49,7 @@ public class BuyerHome extends AppCompatActivity {
         materialList = new ArrayList<>();
         fullMaterialList = new ArrayList<>();
 
+        // Initialize Adapter with isBuyer = true
         adapter = new ListingAdapter(materialList, true);
         rvBuyerMaterials.setAdapter(adapter);
 
@@ -81,7 +82,7 @@ public class BuyerHome extends AppCompatActivity {
     }
 
     private void setupCategoryFilters() {
-        // Updated IDs to match activity_user_buyer_home.xml
+        // IDs now match activity_user_buyer_home.xml
         try {
             findViewById(R.id.btnFilterAll).setOnClickListener(v -> filterByCategory("All"));
             findViewById(R.id.btnBooks).setOnClickListener(v -> filterByCategory("Books"));

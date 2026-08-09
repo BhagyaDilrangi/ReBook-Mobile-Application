@@ -84,7 +84,7 @@
                                     android:id="@+id/txtContributionScore"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Contribution Score: 204"
+                                    android:text="Contribution Score: 0"
                                     android:textSize="12sp"
                                     android:fontFamily="sans-serif-medium"
                                     android:textColor="#1A237E" />
@@ -92,11 +92,25 @@
                         </LinearLayout>
 
                         <!-- Inner Slide-Show Preview Box -->
-                        <View
+                        <FrameLayout
+                            android:id="@+id/slideShowViewPlaceholder"
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_marginTop="16dp"
-                            android:background="#F1F3F4" />
+                            android:background="#F1F3F4"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:id="@+id/txtSlideShowMessage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Welcome to ReBook"
+                                android:textColor="#1A237E"
+                                android:textSize="14sp"
+                                android:gravity="center"
+                                android:fontFamily="sans-serif-medium"/>
+                        </FrameLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

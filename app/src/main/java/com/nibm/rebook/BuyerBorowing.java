@@ -23,6 +23,8 @@ public class BuyerBorowing extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +35,15 @@ public class BuyerBorowing extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference();
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Get data from intent
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference();
+
+        // Get data safely from intent
         materialId = getIntent().getStringExtra("MATERIAL_ID");
         materialTitle = getIntent().getStringExtra("MATERIAL_TITLE");
         sellerId = getIntent().getStringExtra("SELLER_ID");
@@ -57,6 +65,11 @@ public class BuyerBorowing extends AppCompatActivity {
                 return;
             }
 
+            if (materialId == null || materialId.isEmpty()) {
+                Toast.makeText(this, "Error: Invalid material reference.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             processBorrowRequest(name, phone, address, duration);
         });
     }
@@ -73,22 +86,25 @@ public class BuyerBorowing extends AppCompatActivity {
         transactionData.put("address", address);
         transactionData.put("duration", duration);
         transactionData.put("materialId", materialId);
-        transactionData.put("materialTitle", materialTitle);
-        transactionData.put("sellerId", sellerId);
+        transactionData.put("materialTitle", materialTitle != null ? materialTitle : "Untitled");
+        transactionData.put("sellerId", sellerId != null ? sellerId : "");
         transactionData.put("status", "Pending");
         transactionData.put("type", "Borrow");
 
         if (transactionId != null) {
+            btnRequest.setEnabled(false);
             mDatabase.child("transactions").child(transactionId).setValue(transactionData)
                     .addOnSuccessListener(aVoid -> {
-                        // Update material status to Borrowed or Reserved
-                        mDatabase.child("materials").child(materialId).child("status").setValue("Borrowed");
-                        
-                        Toast.makeText(this, "Borrow Request Sent!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(BuyerBorowing.this, BuyerHome.class));
-                        finish();
+                        // Update material status to Borrowed
+                        mDatabase.child("materials").child(materialId).child("status").setValue("Borrowed")
+                                .addOnCompleteListener(task -> {
+                                    Toast.makeText(this, "Borrow Request Sent Successfully!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(BuyerBorowing.this, BuyerHome.class));
+                                    finish();
+                                });
                     })
                     .addOnFailureListener(e -> {
+                        btnRequest.setEnabled(true);
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }

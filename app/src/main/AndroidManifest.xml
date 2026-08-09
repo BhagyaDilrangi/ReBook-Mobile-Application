@@ -52,6 +52,15 @@
         <activity
             android:name=".BuyerHome"
             android:exported="false" />
+        <activity
+            android:name=".BuyerSelling"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerBorowing"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerDonating"
+            android:exported="false" />
 
         <activity
             android:name=".SplashActivity"
