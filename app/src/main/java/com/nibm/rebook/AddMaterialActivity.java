@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -38,6 +41,7 @@ public class AddMaterialActivity extends AppCompatActivity {
     private EditText etTitle, etPrice;
     private Spinner spinnerType, spinnerCategory;
     private ImageView imgPreview;
+    private TextView txtPdfFileName;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -46,7 +50,7 @@ public class AddMaterialActivity extends AppCompatActivity {
 
     private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
-    // Image Picker Launcher (Allows picking files including from Downloads/Device storage)
+    // Image Picker Launcher for Cover Image selection
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -54,20 +58,17 @@ public class AddMaterialActivity extends AppCompatActivity {
                     Uri uri = result.getData().getData();
                     if (uri != null) {
                         try {
-                            // Take persistable URI permission if needed for files from storage/downloads
                             getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
                             InputStream inputStream = getContentResolver().openInputStream(uri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
                             if (bitmap != null) {
                                 encodedImageString = bitmapToBase64(bitmap);
-
                                 if (imgPreview != null) {
                                     imgPreview.setVisibility(View.VISIBLE);
                                     imgPreview.setImageBitmap(bitmap);
                                 }
-                                Toast.makeText(this, "Image Selected from Device Successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Cover Image Loaded Successfully", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(this, "Selected file is not a valid image", Toast.LENGTH_SHORT).show();
                             }
@@ -79,14 +80,35 @@ public class AddMaterialActivity extends AppCompatActivity {
                 }
             });
 
-    // PDF Preview Picker Launcher
-    private final ActivityResultLauncher<String> pdfPickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    pdfFileString = uri.toString();
-                    String fileName = getFileName(uri);
-                    Toast.makeText(this, "PDF Selected: " + fileName, Toast.LENGTH_SHORT).show();
+    // PDF Document Picker Launcher to browse device documents and render first page preview
+    private final ActivityResultLauncher<Intent> pdfPickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        try {
+                            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            pdfFileString = uri.toString();
+                            String fileName = getFileName(uri);
+
+                            if (txtPdfFileName != null) {
+                                txtPdfFileName.setText("Selected PDF: " + fileName);
+                            }
+
+                            // Render PDF First Page to Bitmap Preview
+                            Bitmap pdfPageBitmap = renderPdfFirstPage(uri);
+                            if (pdfPageBitmap != null && imgPreview != null) {
+                                imgPreview.setVisibility(View.VISIBLE);
+                                imgPreview.setImageBitmap(pdfPageBitmap);
+                            }
+
+                            Toast.makeText(this, "PDF Selected: " + fileName, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Log.e(TAG, "PDF selection/preview error: " + e.getMessage());
+                            Toast.makeText(this, "Failed to render PDF preview", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             });
 
@@ -109,6 +131,7 @@ public class AddMaterialActivity extends AppCompatActivity {
         spinnerType = findViewById(R.id.spinnerMaterialType);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         imgPreview = findViewById(R.id.imgPreview);
+        txtPdfFileName = findViewById(R.id.txtPdfFileName);
 
         String[] types = {"Sale", "Borrow", "Donate"};
         ArrayAdapter<String> adapterType = new ArrayAdapter<>(this,
@@ -123,11 +146,11 @@ public class AddMaterialActivity extends AppCompatActivity {
         Button btnUploadImage = findViewById(R.id.btnUploadImage);
         Button btnUploadPreview = findViewById(R.id.btnUploadPreview);
 
-        // Open device file manager/downloads folder to pick an image
-        btnUploadImage.setOnClickListener(v -> openDeviceFileStorage());
+        // Open device file storage for Cover Image
+        btnUploadImage.setOnClickListener(v -> openFileStorage("image/*"));
 
-        // Open file picker for PDF preview
-        btnUploadPreview.setOnClickListener(v -> pdfPickerLauncher.launch("application/pdf"));
+        // Open device file storage for PDF documents
+        btnUploadPreview.setOnClickListener(v -> openFileStorage("application/pdf"));
 
         btnPublish.setOnClickListener(v -> {
             String title = etTitle.getText().toString().trim();
@@ -153,6 +176,7 @@ public class AddMaterialActivity extends AppCompatActivity {
             String materialId = mDatabase.push().getKey();
             Material newMaterial = new Material(materialId, title, "Available", type, category, sellerId, price);
 
+            // Save Base64 image and PDF URI string to DTO properties so other UIs can fetch them
             newMaterial.setImageUrl(encodedImageString);
             newMaterial.setPdfFile(pdfFileString);
 
@@ -173,11 +197,35 @@ public class AddMaterialActivity extends AppCompatActivity {
         });
     }
 
-    private void openDeviceFileStorage() {
+    private void openFileStorage(String mimeType) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*"); // Filters to images, allowing selection from Downloads, Recent, and Internal Storage
-        imagePickerLauncher.launch(intent);
+        intent.setType(mimeType);
+        if ("application/pdf".equals(mimeType)) {
+            pdfPickerLauncher.launch(intent);
+        } else {
+            imagePickerLauncher.launch(intent);
+        }
+    }
+
+    private Bitmap renderPdfFirstPage(Uri uri) {
+        try {
+            ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+            if (parcelFileDescriptor != null) {
+                PdfRenderer pdfRenderer = new PdfRenderer(parcelFileDescriptor);
+                if (pdfRenderer.getPageCount() > 0) {
+                    PdfRenderer.Page page = pdfRenderer.openPage(0);
+                    Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
+                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                    page.close();
+                    pdfRenderer.close();
+                    return bitmap;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "PDF Rendering error: " + e.getMessage());
+        }
+        return null;
     }
 
     private String bitmapToBase64(Bitmap bitmap) {

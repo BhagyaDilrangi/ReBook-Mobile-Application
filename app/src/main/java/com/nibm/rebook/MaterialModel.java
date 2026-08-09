@@ -1,30 +1,32 @@
 package com.nibm.rebook;
 
 public class MaterialModel {
-    private String id;
+    private String materialId;
     private String title;
     private String status;
     private String type;
     private String category;
     private String sellerId;
     private double price;
+    private String pdfFile;
 
     // Required for Firebase
     public MaterialModel() {
     }
 
-    public MaterialModel(String id, String title, String status, String type, String category, String sellerId, double price) {
-        this.id = id;
+    public MaterialModel(String materialId, String title, String status, String type, String category, String sellerId, double price, String pdfFile) {
+        this.materialId = materialId;
         this.title = title;
         this.status = status;
         this.type = type;
         this.category = category;
         this.sellerId = sellerId;
         this.price = price;
+        this.pdfFile = pdfFile;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getMaterialId() { return materialId; }
+    public void setMaterialId(String materialId) { this.materialId = materialId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -43,4 +45,7 @@ public class MaterialModel {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
+
+    public String getPdfFile() { return pdfFile; }
+    public void setPdfFile(String pdfFile) { this.pdfFile = pdfFile; }
 }

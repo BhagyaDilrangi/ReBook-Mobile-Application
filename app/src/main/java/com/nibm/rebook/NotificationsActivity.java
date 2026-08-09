@@ -28,22 +28,26 @@ public class NotificationsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        if (getSupportActionBar() != null) getSupportActionBar().hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        String uid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference("notifications").child(uid);
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference();
 
         rvNotifications = findViewById(R.id.rvNotifications);
         rvNotifications.setLayoutManager(new LinearLayoutManager(this));
@@ -52,28 +56,30 @@ public class NotificationsActivity extends AppCompatActivity {
         adapter = new NotificationAdapter(notifyList);
         rvNotifications.setAdapter(adapter);
 
-        fetchNotifications();
+        // Fetch notifications targeted specifically to this logged-in seller/user profile
+        fetchSellerNotifications(currentUserId);
     }
 
-    private void fetchNotifications() {
-        mDatabase.orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                notifyList.clear();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    NotificationItem item = data.getValue(NotificationItem.class);
-                    if (item != null) {
-                        // Add to top so newest is first
-                        notifyList.add(0, item);
+    private void fetchSellerNotifications(String sellerId) {
+        // Query notifications where the sellerId matches the current user or stored under notifications/{uid}
+        mDatabase.child("notifications").child(sellerId).orderByChild("timestamp")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        notifyList.clear();
+                        for (DataSnapshot data : snapshot.getChildren()) {
+                            NotificationItem item = data.getValue(NotificationItem.class);
+                            if (item != null) {
+                                notifyList.add(0, item); // Newest notifications at the top
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(NotificationsActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(NotificationsActivity.this, "Error loading notifications: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +21,9 @@ import com.nibm.rebook.CustomAdapter.ChatAdapter;
 import com.nibm.rebook.dto.ChatMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -31,6 +34,10 @@ public class ChatActivity extends AppCompatActivity {
     private List<ChatMessage> chatList;
     private ChatAdapter adapter;
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private String currentUserId, receiverId, materialId, chatId;
+
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +48,41 @@ public class ChatActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        // Initialize Firebase Realtime Database safely with exception handling
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        currentUserId = mAuth.getCurrentUser().getUid();
+
+        // Retrieve intent extras passed from Buyer or Seller workflows
+        receiverId = getIntent().getStringExtra("RECEIVER_ID");
+        materialId = getIntent().getStringExtra("MATERIAL_ID");
+
+        // If receiverId is not directly passed, default or map dynamically
+        if (receiverId == null || receiverId.isEmpty()) {
+            receiverId = getIntent().getStringExtra("SELLER_ID");
+        }
+
+        // Establish unique chat room node based on users/material to keep conversations contextual
+        chatId = getIntent().getStringExtra("CHAT_ID");
+        if (chatId == null || chatId.isEmpty()) {
+            if (materialId != null && !materialId.isEmpty()) {
+                chatId = "chat_" + materialId + "_" + currentUserId;
+            } else if (receiverId != null && !receiverId.isEmpty()) {
+                // Generate a deterministic chat ID between two users
+                chatId = currentUserId.compareTo(receiverId) < 0 ?
+                        currentUserId + "_" + receiverId : receiverId + "_" + currentUserId;
+            } else {
+                chatId = "general_chat_" + currentUserId;
+            }
+        }
+
+        // Initialize Firebase Database Reference
         try {
-            mDatabase = FirebaseDatabase.getInstance().getReference("messages");
+            mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("chats").child(chatId);
         } catch (Exception e) {
             Toast.makeText(this, "Database Connection Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             mDatabase = null;
@@ -59,12 +98,13 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ChatAdapter(chatList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
         rvChat.setLayoutManager(layoutManager);
         rvChat.setAdapter(adapter);
 
-        // Read from Database with robust error handling
+        // Read chat messages from Database in real-time
         if (mDatabase != null) {
-            mDatabase.addValueEventListener(new ValueEventListener() {
+            mDatabase.child("messages").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try {
@@ -91,15 +131,31 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
 
-        // Send Button Logic with Validation & Exception Handling
+        // Send Button Logic with Validation & Notification Trigger
         btnSend.setOnClickListener(v -> {
             try {
                 String text = edtMessage.getText().toString().trim();
                 if (!TextUtils.isEmpty(text)) {
                     if (mDatabase != null) {
-                        ChatMessage chatMessage = new ChatMessage(text, true);
-                        mDatabase.push().setValue(chatMessage)
-                                .addOnFailureListener(e -> Toast.makeText(ChatActivity.this, "Failed to send: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        String messageId = mDatabase.child("messages").push().getKey();
+                        long timestamp = System.currentTimeMillis();
+
+                        Map<String, Object> messageMap = new HashMap<>();
+                        messageMap.put("messageId", messageId);
+                        messageMap.put("senderId", currentUserId);
+                        messageMap.put("message", text);
+                        messageMap.put("timestamp", timestamp);
+
+                        if (messageId != null) {
+                            mDatabase.child("messages").child(messageId).setValue(messageMap)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Trigger notification to the receiver if a target ID exists
+                                        if (receiverId != null && !receiverId.isEmpty() && !receiverId.equals(currentUserId)) {
+                                            sendChatNotification(receiverId, text);
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(ChatActivity.this, "Failed to send: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        }
                         edtMessage.setText("");
                     } else {
                         Toast.makeText(ChatActivity.this, "Database reference is null", Toast.LENGTH_SHORT).show();
@@ -111,5 +167,21 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(ChatActivity.this, "Error sending message: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendChatNotification(String targetUserId, String messageText) {
+        DatabaseReference notifRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("notifications").child(targetUserId);
+        String notifId = notifRef.push().getKey();
+
+        Map<String, Object> notifData = new HashMap<>();
+        notifData.put("id", notifId);
+        notifData.put("title", "New Chat Message");
+        notifData.put("message", "You received a new message: " + messageText);
+        notifData.put("timestamp", System.currentTimeMillis());
+        notifData.put("type", "Chat");
+
+        if (notifId != null) {
+            notifRef.child(notifId).setValue(notifData);
+        }
     }
 }

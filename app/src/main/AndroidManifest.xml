@@ -61,6 +61,15 @@
         <activity
             android:name=".BuyerDonating"
             android:exported="false" />
+        <activity
+            android:name=".BuyerCalcuator"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerLectureNotes"
+            android:exported="false" />
+        <activity
+            android:name=".BuyerPastPapers"
+            android:exported="false" />
 
         <activity
             android:name=".SplashActivity"

@@ -33,6 +33,10 @@ public class MaterialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         recyclerView = findViewById(R.id.recyclerViewMaterials);
         search = findViewById(R.id.searchMaterial);
 
@@ -42,7 +46,47 @@ public class MaterialActivity extends AppCompatActivity {
         // Initialize Firebase Database Reference
         mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("materials");
 
-        adapter = new MaterialAdapter(filteredList);
+        // Pass activity context or listener callbacks to adapter for View, Hide/Toggle Status, and Delete operations
+        adapter = new MaterialAdapter(filteredList, new MaterialAdapter.OnMaterialActionListener() {
+            @Override
+            public void onView(MaterialModel material) {
+                // Handle View Action (e.g., open PDF or show material details)
+                if (material.getPdfFile() != null && !material.getPdfFile().isEmpty()) {
+                    try {
+                        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(material.getPdfFile()));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(MaterialActivity.this, "Unable to open document file.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MaterialActivity.this, "Title: " + material.getTitle() + " | Price: LKR " + material.getPrice(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onHide(MaterialModel material) {
+                // Handle Hide / Status Toggle Action
+                String materialId = material.getMaterialId();
+                if (materialId != null) {
+                    String newStatus = "Hidden".equalsIgnoreCase(material.getStatus()) ? "Available" : "Hidden";
+                    mDatabase.child(materialId).child("status").setValue(newStatus)
+                            .addOnSuccessListener(aVoid -> Toast.makeText(MaterialActivity.this, "Material status updated to " + newStatus, Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(MaterialActivity.this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onDelete(MaterialModel material) {
+                // Handle Delete Action
+                String materialId = material.getMaterialId();
+                if (materialId != null) {
+                    mDatabase.child(materialId).removeValue()
+                            .addOnSuccessListener(aVoid -> Toast.makeText(MaterialActivity.this, "Material deleted successfully", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(MaterialActivity.this, "Failed to delete material: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -68,7 +112,7 @@ public class MaterialActivity extends AppCompatActivity {
             }
         });
 
-        // Search
+        // Search Filter
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

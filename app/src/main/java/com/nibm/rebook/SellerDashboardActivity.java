@@ -63,7 +63,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
         txtContributionScore = findViewById(R.id.txtContributionScore);
         imgProfileDrawerTrigger = findViewById(R.id.imgProfile);
         slideShowViewPlaceholder = findViewById(R.id.slideShowViewPlaceholder);
-        txtSlideShowMessage = findViewById(R.id.txtSlideShowMessage); // Ensure textview component exists inside placeholder if used
+        txtSlideShowMessage = findViewById(R.id.txtSlideShowMessage);
 
         // Initialize default slideshow banner notices
         slideShowTexts.add("Welcome to ReBook Platform Hub");
@@ -169,7 +169,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     txtSlideShowMessage.setText(slideShowTexts.get(slideIndex));
                     slideIndex = (slideIndex + 1) % slideShowTexts.size();
                 }
-                slideHandler.postDelayed(this, 4000); // Rotate every 4 seconds
+                slideHandler.postDelayed(this, 4000);
             }
         };
         slideHandler.postDelayed(slideRunnable, 1000);
@@ -217,13 +217,12 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         int materialCount = (int) snapshot.getChildrenCount();
-                        int contributionScore = materialCount * 10; // Calculating score based on uploaded count
+                        int contributionScore = materialCount * 10;
 
                         if (txtContributionScore != null) {
                             txtContributionScore.setText("Contribution Score: " + contributionScore);
                         }
 
-                        // Feed live inventory metrics dynamically into the slideshow rotator
                         if (materialCount > 0) {
                             slideShowTexts.add("Active Inventory: You have " + materialCount + " items listed.");
                         }

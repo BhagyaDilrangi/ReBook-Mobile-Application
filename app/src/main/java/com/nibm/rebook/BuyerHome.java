@@ -25,7 +25,7 @@ public class BuyerHome extends AppCompatActivity {
     private RecyclerView rvBuyerMaterials;
     private ListingAdapter adapter;
     private List<Material> materialList;
-    private List<Material> fullMaterialList; // Keeps all items for category filtering
+    private List<Material> fullMaterialList;
     private DatabaseReference mDatabase;
 
     private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
