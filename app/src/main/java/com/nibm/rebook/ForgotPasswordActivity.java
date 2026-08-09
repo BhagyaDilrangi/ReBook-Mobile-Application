@@ -10,25 +10,32 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    EditText etNewPassword, etConfirmPassword;
-    Button btnUpdatePassword;
-    CheckBox showPassword;
-    TextView txtBackToLogin;
-    FirebaseAuth mAuth;
+    private EditText etNewPassword, etConfirmPassword;
+    private Button btnUpdatePassword;
+    private CheckBox showPassword;
+    private TextView txtBackToLogin;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+
+    // Matched with your google-services.json project URL
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_password); // Ensure this matches your XML file name
+        setContentView(R.layout.activity_forgot_password);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("users");
 
         etNewPassword = findViewById(R.id.etNewPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
@@ -78,14 +85,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
             FirebaseUser user = mAuth.getCurrentUser();
             if (user != null) {
-                // Update password directly for the currently logged-in user session
+                String uid = user.getUid();
+
+                // 1. Update password in Firebase Authentication
                 user.updatePassword(newPassword)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ForgotPasswordActivity.this,
-                                        "Password updated successfully!",
-                                        Toast.LENGTH_LONG).show();
-                                finish(); // Close and return to login
+                                // 2. Synchronize and update password value inside Realtime Database
+                                mDatabase.child(uid).child("password").setValue(newPassword)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(ForgotPasswordActivity.this,
+                                                    "Password updated successfully in Auth & Database!",
+                                                    Toast.LENGTH_LONG).show();
+                                            mAuth.signOut(); // Force re-login with new credentials
+                                            finish();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(ForgotPasswordActivity.this,
+                                                    "Auth updated, but database sync failed: " + e.getMessage(),
+                                                    Toast.LENGTH_LONG).show();
+                                        });
                             } else {
                                 Toast.makeText(ForgotPasswordActivity.this,
                                         "Error: " + task.getException().getMessage(),
@@ -99,7 +118,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
-        // Navigate back to login screen
+        // Navigate back to log in screen
         txtBackToLogin.setOnClickListener(v -> finish());
     }
 }

@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nibm.rebook.CustomAdapter.BorrowAdapter;
+import com.nibm.rebook.dto.BorrowItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,10 @@ public class BorrowHistoryActivity extends AppCompatActivity {
 
     private RecyclerView rvHistory;
     private BorrowAdapter adapter;
-    private List<com.nibm.rebook.BorrowItem> borrowList;
+    private List<BorrowItem> borrowList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,7 @@ public class BorrowHistoryActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("transactions");
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("transactions");
 
         rvHistory = findViewById(R.id.rvHistory);
         rvHistory.setLayoutManager(new LinearLayoutManager(this));
@@ -65,7 +67,7 @@ public class BorrowHistoryActivity extends AppCompatActivity {
                                 String title = data.child("materialTitle").getValue(String.class);
                                 String duration = data.child("duration").getValue(String.class);
                                 String status = data.child("status").getValue(String.class);
-                                borrowList.add(new com.nibm.rebook.BorrowItem(title, "Duration: " + duration, status));
+                                borrowList.add(new BorrowItem(title, "Duration: " + duration, status));
                             }
                         }
                         adapter.notifyDataSetChanged();

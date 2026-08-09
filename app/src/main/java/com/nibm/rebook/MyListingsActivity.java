@@ -28,6 +28,9 @@ public class MyListingsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    // Matched with your correct Firebase Realtime Database URL from google-services.json
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,13 @@ public class MyListingsActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("materials");
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("materials");
 
         // 1. Initialize the RecyclerView
         rvMyListings = findViewById(R.id.rvMyListings);
@@ -57,10 +66,10 @@ public class MyListingsActivity extends AppCompatActivity {
 
     private void fetchMyListings() {
         if (mAuth.getCurrentUser() == null) return;
-        
+
         String currentUserId = mAuth.getCurrentUser().getUid();
 
-        // Query materials where sellerId matches current user
+        // Query materials where sellerId matches the current user's UID
         mDatabase.orderByChild("sellerId").equalTo(currentUserId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -77,7 +86,7 @@ public class MyListingsActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MyListingsActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyListingsActivity.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

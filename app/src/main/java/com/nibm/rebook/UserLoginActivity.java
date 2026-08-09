@@ -41,8 +41,6 @@ public class UserLoginActivity extends AppCompatActivity {
 
         txtRegister.setOnClickListener(v -> {
             Intent intent = new Intent(UserLoginActivity.this, UserRegisterActivity.class);
-            // Pass the role if we came from RoleSelection
-            intent.putExtra("USER_ROLE", getIntent().getStringExtra("USER_ROLE"));
             startActivity(intent);
         });
 
@@ -61,7 +59,7 @@ public class UserLoginActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Auth successful, checking database...");
-                            checkUserRole();
+                            checkUserRoleAndVerification();
                         } else {
                             String error = task.getException() != null ? task.getException().getMessage() : "Unknown error";
                             Log.e(TAG, "Login Failed: " + error);
@@ -71,7 +69,9 @@ public class UserLoginActivity extends AppCompatActivity {
         });
     }
 
-    private void checkUserRole() {
+    private void checkUserRoleAndVerification() {
+        if (mAuth.getCurrentUser() == null) return;
+
         String uid = mAuth.getCurrentUser().getUid();
         FirebaseDatabase.getInstance(DATABASE_URL).getReference("users").child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,25 +79,35 @@ public class UserLoginActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             String role = snapshot.child("role").getValue(String.class);
-                            Log.d(TAG, "User role found: " + role);
+                            String status = snapshot.child("status").getValue(String.class);
+                            Boolean isVerified = snapshot.child("isVerified").getValue(Boolean.class);
 
-                            Intent intent;
-                            if ("BUYER".equalsIgnoreCase(role)) {
-                                intent = new Intent(UserLoginActivity.this, BuyerHome.class);
-                            } else if ("SELLER".equalsIgnoreCase(role)) {
-                                intent = new Intent(UserLoginActivity.this, SellerDashboardActivity.class);
-                            } else if ("ADMIN".equalsIgnoreCase(role)) {
-                                intent = new Intent(UserLoginActivity.this, DashboardActivity.class);
-                            } else {
-                                Log.e(TAG, "Invalid role in database: " + role);
-                                Toast.makeText(UserLoginActivity.this, "Invalid account role", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "User role: " + role + ", Status: " + status + ", IsVerified: " + isVerified);
+
+                            // Admin role bypasses verification checks
+                            if ("Admin".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
+                                navigateToDashboard(DashboardActivity.class);
                                 return;
                             }
-                            startActivity(intent);
-                            finish();
+
+                            // Check both status string ("Verified") or boolean flag (true) for robustness
+                            boolean verifiedCheck = ("Verified".equalsIgnoreCase(status)) || (isVerified != null && isVerified);
+
+                            if (verifiedCheck) {
+                                if ("Seller".equalsIgnoreCase(role) || "SELLER".equalsIgnoreCase(role)) {
+                                    navigateToDashboard(SellerDashboardActivity.class);
+                                } else {
+                                    navigateToDashboard(BuyerHome.class);
+                                }
+                            } else {
+                                // Account is still pending approval
+                                mAuth.signOut();
+                                Toast.makeText(UserLoginActivity.this, "Your account is pending admin verification.", Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             Log.e(TAG, "User profile not found in database for UID: " + uid);
-                            Toast.makeText(UserLoginActivity.this, "User profile not found", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
+                            Toast.makeText(UserLoginActivity.this, "User profile not found. Please contact support.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -107,5 +117,11 @@ public class UserLoginActivity extends AppCompatActivity {
                         Toast.makeText(UserLoginActivity.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void navigateToDashboard(Class<?> targetActivity) {
+        Intent intent = new Intent(UserLoginActivity.this, targetActivity);
+        startActivity(intent);
+        finish();
     }
 }

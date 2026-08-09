@@ -1,6 +1,7 @@
 package com.nibm.rebook;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nibm.rebook.CustomAdapter.ChatAdapter;
+import com.nibm.rebook.dto.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,80 +26,89 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView rvChat;
     EditText edtMessage;
-
     Button btnSend;
 
-    private List<com.nibm.rebook.ChatMessage> chatList;
+    private List<ChatMessage> chatList;
     private ChatAdapter adapter;
     private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Ensure this matches your XML file name
         setContentView(R.layout.activity_chat);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-<<<<<<< HEAD
-=======
-        // Initialize Firebase Realtime Database
-        mDatabase = FirebaseDatabase.getInstance().getReference("messages");
->>>>>>> 4862004 (Implement successful admin login)
+        // Initialize Firebase Realtime Database safely with exception handling
+        try {
+            mDatabase = FirebaseDatabase.getInstance().getReference("messages");
+        } catch (Exception e) {
+            Toast.makeText(this, "Database Connection Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            mDatabase = null;
+        }
 
         // Initialize Views
-        RecyclerView rvChat = findViewById(R.id.rvChat);
-        EditText edtMessage = findViewById(R.id.edtMessage);
-        Button btnSend = findViewById(R.id.btnSend);
+        rvChat = findViewById(R.id.rvChat);
+        edtMessage = findViewById(R.id.edtMessage);
+        btnSend = findViewById(R.id.btnSend);
 
-        // Setup Data
+        // Setup Data and Adapter
         chatList = new ArrayList<>();
         adapter = new ChatAdapter(chatList);
 
-        rvChat.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvChat.setLayoutManager(layoutManager);
         rvChat.setAdapter(adapter);
 
-        // Read from Database
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatList.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    ChatMessage message = postSnapshot.getValue(ChatMessage.class);
-                    if (message != null) {
-                        chatList.add(message);
+        // Read from Database with robust error handling
+        if (mDatabase != null) {
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try {
+                        chatList.clear();
+                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                            ChatMessage message = postSnapshot.getValue(ChatMessage.class);
+                            if (message != null) {
+                                chatList.add(message);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        if (!chatList.isEmpty()) {
+                            rvChat.scrollToPosition(chatList.size() - 1);
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(ChatActivity.this, "Data parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-                adapter.notifyDataSetChanged();
-                if (!chatList.isEmpty()) {
-                    rvChat.scrollToPosition(chatList.size() - 1);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(ChatActivity.this, "Failed to load messages: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ChatActivity.this, "Failed to load messages: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Send Button Logic
+        // Send Button Logic with Validation & Exception Handling
         btnSend.setOnClickListener(v -> {
-            String text = edtMessage.getText().toString().trim();
-            if (!text.isEmpty()) {
-<<<<<<< HEAD
-                chatList.add(new com.nibm.rebook.ChatMessage(text, true));
-                adapter.notifyDataSetChanged();
-                // Scroll to the latest message
-                rvChat.scrollToPosition(chatList.size() - 1);
-=======
-                // For now, we set isSentByUser to true for messages sent from this device
-                ChatMessage chatMessage = new ChatMessage(text, true);
-                mDatabase.push().setValue(chatMessage)
-                        .addOnFailureListener(e -> Toast.makeText(ChatActivity.this, "Failed to send: " + e.getMessage(), Toast.LENGTH_SHORT).show());
->>>>>>> 4862004 (Implement successful admin login)
-                edtMessage.setText("");
+            try {
+                String text = edtMessage.getText().toString().trim();
+                if (!TextUtils.isEmpty(text)) {
+                    if (mDatabase != null) {
+                        ChatMessage chatMessage = new ChatMessage(text, true);
+                        mDatabase.push().setValue(chatMessage)
+                                .addOnFailureListener(e -> Toast.makeText(ChatActivity.this, "Failed to send: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        edtMessage.setText("");
+                    } else {
+                        Toast.makeText(ChatActivity.this, "Database reference is null", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    edtMessage.setError("Message cannot be empty");
+                }
+            } catch (Exception e) {
+                Toast.makeText(ChatActivity.this, "Error sending message: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

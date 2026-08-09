@@ -38,11 +38,11 @@
             android:title="@string/nav_requests" />
         <item
             android:id="@+id/nav_history_sales"
-            android:icon="@drawable/ic_history"
+            android:icon="@drawable/ic_history_sales"
             android:title="@string/nav_history_sales" />
         <item
             android:id="@+id/nav_history_borrow"
-            android:icon="@drawable/ic_history"
+            android:icon="@drawable/ic_history_borrow"
             android:title="@string/nav_history_borrow" />
         <item
             android:id="@+id/nav_notifications"

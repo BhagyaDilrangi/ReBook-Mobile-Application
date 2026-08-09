@@ -10,12 +10,11 @@ public class ChatMessage {
     private long timestamp;
     private boolean isSentByUser; // Field for UI-based chat models
 
-    // Required for Firebase
+    // Required empty constructor for Firebase Realtime Database deserialization
     public ChatMessage() {
     }
 
-<<<<<<< HEAD
-    // Constructor for Firebase/Data usage
+    // Constructor for Firebase / Database data usage
     public ChatMessage(String message, String senderId, String receiverId, long timestamp) {
         this.message = message;
         this.senderId = senderId;
@@ -23,32 +22,45 @@ public class ChatMessage {
         this.timestamp = timestamp;
     }
 
-    // Constructor for UI/Local usage
-=======
->>>>>>> 4862004 (Implement successful admin login)
+    // Constructor for local UI usage
     public ChatMessage(String message, boolean isSentByUser) {
         this.message = message;
         this.isSentByUser = isSentByUser;
     }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-<<<<<<< HEAD
+    // Getters and Setters
+    public String getMessage() {
+        return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public String getSenderId() { return senderId; }
-    public void setSenderId(String senderId) { this.senderId = senderId; }
+    public String getSenderId() {
+        return senderId;
+    }
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
 
-    public String getReceiverId() { return receiverId; }
-    public void setReceiverId(String receiverId) { this.receiverId = receiverId; }
+    public String getReceiverId() {
+        return receiverId;
+    }
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
+    }
 
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public long getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
-    public boolean isSentByUser() { return isSentByUser; }
-    public void setSentByUser(boolean sentByUser) { isSentByUser = sentByUser; }
+    public boolean isSentByUser() {
+        return isSentByUser;
+    }
+    public void setSentByUser(boolean sentByUser) {
+        this.isSentByUser = sentByUser;
+    }
 }
-=======
-    public boolean isSentByUser() { return isSentByUser; }
-    public void setSentByUser(boolean sentByUser) { isSentByUser = sentByUser; }
-}
->>>>>>> 4862004 (Implement successful admin login)

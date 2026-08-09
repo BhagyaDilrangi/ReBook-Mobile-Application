@@ -34,6 +34,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
+    // Matched with your project's correct Firebase URL from google-services.json
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app";
+
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -57,13 +60,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        String uid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance("https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference("users").child(uid);
 
+        String uid = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("users").child(uid);
+
+        // Bind Views
         imgProfile = findViewById(R.id.imgProfile);
         btnUploadCamera = findViewById(R.id.btnUploadCamera);
         edtFirstName = findViewById(R.id.edtFirstName);
@@ -72,7 +77,7 @@ public class EditProfileActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         edtAddress = findViewById(R.id.edtAddress);
 
-        // Fetch current data
+        // Fetch current data from Firebase Realtime Database
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,12 +92,14 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(EditProfileActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "Failed to load data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
+        // Open gallery to select profile picture
         btnUploadCamera.setOnClickListener(v -> openImageGallery());
 
+        // Save updated profile data back to Firebase Database
         findViewById(R.id.btnSaveProfile).setOnClickListener(v -> {
             String firstName = edtFirstName.getText().toString().trim();
             String lastName = edtLastName.getText().toString().trim();
@@ -120,15 +127,10 @@ public class EditProfileActivity extends AppCompatActivity {
             });
         });
 
+        // Redirect or trigger password change window
         findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
-            String email = mAuth.getCurrentUser().getEmail();
-            if (email != null) {
-                mAuth.sendPasswordResetEmail(email).addOnSuccessListener(aVoid -> 
-                    Toast.makeText(EditProfileActivity.this, "Password reset email sent!", Toast.LENGTH_SHORT).show()
-                ).addOnFailureListener(e -> 
-                    Toast.makeText(EditProfileActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-            }
+            Intent intent = new Intent(EditProfileActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
     }
 

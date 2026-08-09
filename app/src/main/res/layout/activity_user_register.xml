@@ -113,7 +113,7 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/txt_regi_passward"
+            android:id="@+id/txt_regi_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Passward"
@@ -123,7 +123,7 @@
             android:layout_marginBottom="6dp"/>
 
         <EditText
-            android:id="@+id/edit_regi_passward"
+            android:id="@+id/edit_regi_password"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="Passward"
@@ -133,10 +133,10 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/txt_regi_conformedpassward"
+            android:id="@+id/txt_regi_confirmedpassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Confirmed Passward"
+            android:text="Confirmed Password"
             android:textColor="#495057"
             android:textStyle="bold"
             android:textSize="14sp"

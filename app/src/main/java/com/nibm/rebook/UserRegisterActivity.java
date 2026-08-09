@@ -2,54 +2,63 @@ package com.nibm.rebook;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserRegisterActivity extends AppCompatActivity {
 
-    EditText etFirstName, etLastName, etEmail, etTele, etPassword, etConfirmPassword;
-    Button btnRegister;
-    FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+    private static final String TAG = "UserRegisterActivity";
+    private EditText etFirstName, etLastName, etEmail, etTele, etPassword, etConfirmPassword;
+    private CheckBox cbSellerRole;
+    private Button btnRegister;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+
+    private final String DATABASE_URL = "https://rebook-cff2e-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_register);
-<<<<<<< HEAD
-=======
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
->>>>>>> 4862004 (Implement successful admin login)
 
-        mAuth = FirebaseAuth.getInstance();
-        // Updated to use the default instance which follows google-services.json
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        try {
+            mAuth = FirebaseAuth.getInstance();
+            mDatabase = FirebaseDatabase.getInstance(DATABASE_URL).getReference("users");
+        } catch (Exception e) {
+            Log.e(TAG, "Firebase Initialization Error", e);
+        }
 
         etFirstName = findViewById(R.id.edit_regi_firstname);
         etLastName = findViewById(R.id.edit_regi_lastname);
         etEmail = findViewById(R.id.edit_regi_email);
         etTele = findViewById(R.id.edit_regi_tele);
-        etPassword = findViewById(R.id.edit_regi_passward);
-<<<<<<< HEAD
-        etConfirmPassword = findViewById(R.id.edit_regi_conformedpassward);
-=======
+        etPassword = findViewById(R.id.edit_regi_password);
         etConfirmPassword = findViewById(R.id.edit_regi_confirmedpassword);
         cbSellerRole = findViewById(R.id.cb_remember_me);
->>>>>>> 4862004 (Implement successful admin login)
         btnRegister = findViewById(R.id.regi_btnregister);
 
-        btnRegister.setOnClickListener(v -> {
+        btnRegister.setOnClickListener(v -> registerUser());
+    }
+
+    private void registerUser() {
+        try {
             String fName = etFirstName.getText().toString().trim();
             String lName = etLastName.getText().toString().trim();
             String email = etEmail.getText().toString().trim();
@@ -57,12 +66,6 @@ public class UserRegisterActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             String confPass = etConfirmPassword.getText().toString().trim();
 
-<<<<<<< HEAD
-=======
-            boolean isSeller = cbSellerRole.isChecked();
-            String userRole = isSeller ? "Seller" : "Buyer";
-
->>>>>>> 4862004 (Implement successful admin login)
             if (fName.isEmpty() || lName.isEmpty() || email.isEmpty() || tele.isEmpty() || password.isEmpty() || confPass.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
@@ -73,48 +76,67 @@ public class UserRegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            if (password.length() < 6) {
+                etPassword.setError("Minimum 6 characters required");
+                etPassword.requestFocus();
+                return;
+            }
+
+            btnRegister.setEnabled(false);
+
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            String uid = mAuth.getCurrentUser().getUid();
-                            Map<String, Object> userData = new HashMap<>();
-                            userData.put("firstName", fName);
-                            userData.put("lastName", lName);
-                            userData.put("email", email);
-                            userData.put("telephone", tele);
-<<<<<<< HEAD
-=======
-                            userData.put("role", userRole);
->>>>>>> 4862004 (Implement successful admin login)
+                        try {
+                            if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                                String uid = mAuth.getCurrentUser().getUid();
 
-                            mDatabase.child(uid).setValue(userData)
-                                    .addOnSuccessListener(aVoid -> {
-                                        new AlertDialog.Builder(this)
-                                                .setTitle("Success")
-                                                .setMessage("Thank you for registering!")
-                                                .setPositiveButton("OK", (dialog, which) -> {
-<<<<<<< HEAD
-                                                    startActivity(new Intent(UserRegisterActivity.this, UserLoginActivity.class));
-=======
-                                                    Intent intent;
-                                                    if (isSeller) {
-                                                        intent = new Intent(UserRegisterActivity.this, SellerDashboardActivity.class);
-                                                    } else {
-                                                        intent = new Intent(UserRegisterActivity.this, BuyerHome.class);
-                                                    }
-                                                    startActivity(intent);
->>>>>>> 4862004 (Implement successful admin login)
-                                                    finish();
-                                                })
-                                                .show();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(this, "Database Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    });
-                        } else {
-                            Toast.makeText(this, "Auth Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                String role = (cbSellerRole != null && cbSellerRole.isChecked()) ? "Seller" : "Buyer";
+
+                                Map<String, Object> user = new HashMap<>();
+                                user.put("uid", uid);
+                                user.put("firstName", fName);
+                                user.put("lastName", lName);
+                                user.put("email", email);
+                                user.put("telephone", tele);
+                                user.put("role", role);
+                                user.put("isVerified", false); // Boolean status
+                                user.put("status", "Pending"); // String status matching dashboard controllers
+
+                                mDatabase.child(uid).setValue(user)
+                                        .addOnSuccessListener(aVoid -> {
+                                            mAuth.signOut();
+                                            showSuccessDialog();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            btnRegister.setEnabled(true);
+                                            Toast.makeText(UserRegisterActivity.this, "Database Write Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        });
+                            } else {
+                                btnRegister.setEnabled(true);
+                                String error = task.getException() != null ? task.getException().getMessage() : "Registration failed";
+                                Toast.makeText(UserRegisterActivity.this, "Auth Error: " + error, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            btnRegister.setEnabled(true);
+                            Toast.makeText(UserRegisterActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-        });
+
+        } catch (Exception e) {
+            btnRegister.setEnabled(true);
+            Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showSuccessDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage("Registration successful! Please wait for admin verification before logging in.")
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    startActivity(new Intent(UserRegisterActivity.this, UserLoginActivity.class));
+                    finish();
+                })
+                .show();
     }
 }
